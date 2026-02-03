@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">شقردي</string>
+    <string name="facebook_app_id">1330602054238541</string>
+    <string name="facebook_client_token">f624d0891d49e63c02af2a6fdf6e680a</string>
+<!--    <string name="fb_login_protocol_scheme">fb1330602054238541</string>-->
+</resources>

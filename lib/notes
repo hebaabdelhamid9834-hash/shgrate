@@ -1,0 +1,14 @@
+make phone required in register
+handle issues in register logic
+handle design of accept terms
+handle issues in forget password and otp
+handle update profile,change password loading,success state
+handle some translation
+handle some issues in overflow that happen in the entire screens
+fix safe areas in some screens
+fix padding and margin in app bar that contain search icon
+test the cart cycle and add addresses
+create new keystore
+remove previous version in store
+upload the new app to pay store
+///problem  ===>code not be sent in forget password (back-end)
