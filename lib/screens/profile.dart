@@ -3386,26 +3386,26 @@ class _ProfileState extends State<Profile> {
                 Divider(thickness: 1, color: MyTheme.light_grey),
               ],
             ),
-          if (vendor_system.$)
-            Column(
-              children: [
-                buildBottomVerticalCardListItem(
-                  "assets/shop.png",
-                  LangText(context).local.browse_all_sellers_ucf,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return Filter(selected_filter: "sellers");
-                        },
-                      ),
-                    );
-                  },
-                ),
-                Divider(thickness: 1, color: MyTheme.light_grey),
-              ],
-            ),
+          // if (vendor_system.$)
+          //   Column(
+          //     children: [
+          //       buildBottomVerticalCardListItem(
+          //         "assets/shop.png",
+          //         LangText(context).local.browse_all_sellers_ucf,
+          //         onPressed: () {
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) {
+          //                 return Filter(selected_filter: "sellers");
+          //               },
+          //             ),
+          //           );
+          //         },
+          //       ),
+          //       Divider(thickness: 1, color: MyTheme.light_grey),
+          //     ],
+          //   ),
           if (is_logged_in.$ && (vendor_system.$))
             Column(
               children: [
@@ -3846,9 +3846,47 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget buildCountersRowItem(String counter, String title) {
+    return Expanded(
+      child: Container(
+        height: MediaQuery.of(context).size.height / 7,
+        margin: EdgeInsets.only(top: 20, right: 5, left: 5),
+        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: MyTheme.white,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              counter,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                color: MyTheme.dark_font_grey,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 5),
+            Flexible(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Color(0xff3E4447)),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget buildCountersRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      // crossAxisAlignment: CrossAxisAlignment.stretch, // <-- makes all items same height
       children: [
         buildCountersRowItem(
           _cartCounterString,
@@ -3863,35 +3901,6 @@ class _ProfileState extends State<Profile> {
           AppLocalizations.of(context).your_ordered_all_lower,
         ),
       ],
-    );
-  }
-
-  Widget buildCountersRowItem(String counter, String title) {
-    return Container(
-      margin: EdgeInsets.only(top: 20),
-      padding: EdgeInsets.symmetric(vertical: 14),
-      width: DeviceInfo(context).width! / 3.5,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        color: MyTheme.white,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            counter,
-            maxLines: 2,
-            style: TextStyle(
-              fontSize: 18,
-              color: MyTheme.dark_font_grey,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 5),
-          Text(title, maxLines: 2, style: TextStyle(color: Color(0xff3E4447)),textAlign: TextAlign.center,),
-        ],
-      ),
     );
   }
 
@@ -3930,6 +3939,7 @@ class _ProfileState extends State<Profile> {
                     ),
             ),
           ),
+          SizedBox(width: 10,),
           buildUserInfo(),
           Spacer(),
           GestureDetector(

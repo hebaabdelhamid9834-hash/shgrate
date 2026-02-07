@@ -11,7 +11,13 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _textFadeAnimation;
+
   PackageInfo _packageInfo = PackageInfo(
     appName: AppConfig.app_name,
     packageName: 'Unknown',
@@ -34,10 +40,47 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1300),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.7, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.25),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+
+    // Text appears slightly after logo (premium feel)
+    _textFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
+    _controller.forward();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initPackageInfo();
     });
   }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,36 +108,48 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             Positioned.fill(
               top: DeviceInfo(context).height! * 0.35,
-              child: Column(
-                children: [
-                  Hero(
-                    tag: "splashscreenImage",
-                    child: Container(
-                      height: DeviceInfo(context).width! * 0.45,   // BIG
-                      width: DeviceInfo(context).width! * 0.45,    // BIG
-                      decoration: BoxDecoration(
-                        color: MyTheme.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Image.asset(
-                          "assets/app-icon.png",
-                          fit: BoxFit.contain,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Column(
+                      children: [
+                        Hero(
+                          tag: "splashscreenImage",
+                          child: Container(
+                            height: DeviceInfo(context).width! * 0.45,
+                            width: DeviceInfo(context).width! * 0.45,
+                            decoration: BoxDecoration(
+                              color: MyTheme.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Image.asset(
+                                "assets/app-icon.png",
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 20),
+                        FadeTransition(
+                          opacity: _textFadeAnimation,
+                          child: Text(
+                            AppConfig.app_name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    AppConfig.app_name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,   // bigger text too
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
             Positioned.fill(
