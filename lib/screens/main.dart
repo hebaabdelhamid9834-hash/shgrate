@@ -195,7 +195,7 @@ class _MainState extends State<Main> {
           extendBody: true,
           body: _children[_currentIndex],
           bottomNavigationBar: SizedBox(
-            height: 88,
+            height: 88+MediaQuery.of(context).padding.bottom,
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               onTap: onTapped,

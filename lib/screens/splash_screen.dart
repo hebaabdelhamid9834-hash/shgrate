@@ -64,43 +64,33 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             Positioned.fill(
-              top: DeviceInfo(context).height! / 2 - 72,
+              top: DeviceInfo(context).height! * 0.35,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Hero(
-                      tag: "splashscreenImage",
-                      child: Container(
-                        height: 72,
-                        width: 72,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                        decoration: BoxDecoration(
-                            color: MyTheme.white,
-                            borderRadius: BorderRadius.circular(8)),
+                  Hero(
+                    tag: "splashscreenImage",
+                    child: Container(
+                      height: DeviceInfo(context).width! * 0.45,   // BIG
+                      width: DeviceInfo(context).width! * 0.45,    // BIG
+                      decoration: BoxDecoration(
+                        color: MyTheme.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
                         child: Image.asset(
                           "assets/app-icon.png",
-                          filterQuality: FilterQuality.low,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: Text(
-                      AppConfig.app_name,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
-                          color: Colors.black),
-                    ),
-                  ),
+                  const SizedBox(height: 20),
                   Text(
-                    "V ${AppConfig.app_version}",
-                    style: TextStyle(
+                    AppConfig.app_name,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14.0,
+                      fontSize: 20,   // bigger text too
                       color: Colors.black,
                     ),
                   ),

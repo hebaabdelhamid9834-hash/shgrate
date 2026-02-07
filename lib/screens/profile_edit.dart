@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:active_ecommerce_cms_demo_app/custom/box_decorations.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
@@ -41,69 +42,55 @@ class _ProfileEditState extends State<ProfileEdit> {
   XFile? _file;
 
   // ------------------- CORRECTED FUNCTION -------------------
-  chooseAndUploadImage(context) async {
-    // --- START: Prominent Disclosure Dialog ---
-    // This is the custom pop-up that Google requires.
-    // It explains WHY you need the permission BEFORE you ask for it.
-    bool? userAgreed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).photo_permission_ucf),
-        // This is the most important part for Google's policy.
-        content: Text("To set your profile picture, this app needs to collect your image from the gallery."),
-        actions: <Widget>[
-          TextButton(
-            // If user cancels, do nothing.
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(AppLocalizations.of(context).deny_ucf),
-          ),
-          TextButton(
-            // If user agrees, proceed.
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("Agree"),
-          ),
-        ],
-      ),
-    );
-    // --- END: Prominent Disclosure Dialog ---
+  Future<void> chooseAndUploadImage(BuildContext context) async {
 
-    // If the user did not agree in the dialog, stop here.
-    if (userAgreed == null || !userAgreed) {
-      ToastComponent.showDialog("Permission denied to access photos.");
-      return;
+    // ✅ Android: show disclosure dialog (Google policy)
+    if (Platform.isAndroid) {
+      bool? userAgreed = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(AppLocalizations.of(context).photo_permission_ucf),
+          content: const Text(
+            "To set your profile picture, this app needs to access your gallery.",
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(AppLocalizations.of(context).deny_ucf),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text("Continue"),
+            ),
+          ],
+        ),
+      );
+
+      if (userAgreed != true) return;
     }
 
-    // User has agreed. Now, you can pick the image.
-    // The 'image_picker' package will handle the system permission request itself.
-    _file = await _picker.pickImage(source: ImageSource.gallery);
+    // ✅ iOS: NO dialog. Directly open picker (Apple rule)
+    final XFile? pickedFile =
+    await _picker.pickImage(source: ImageSource.gallery);
 
-    if (_file == null) {
+    if (pickedFile == null) {
       ToastComponent.showDialog(
         AppLocalizations.of(context).no_file_is_chosen,
       );
       return;
     }
 
-    // The rest of your original upload logic is correct and remains the same.
-    String base64Image = FileHelper.getBase64FormateFile(_file!.path);
-    String fileName = _file!.path.split("/").last;
+    // Upload logic (unchanged)
+    String base64Image = FileHelper.getBase64FormateFile(pickedFile.path);
+    String fileName = pickedFile.path.split("/").last;
 
-    var profileImageUpdateResponse = await ProfileRepository().getProfileImageUpdateResponse(
-      base64Image,
-      fileName,
-    );
+    var response = await ProfileRepository()
+        .getProfileImageUpdateResponse(base64Image, fileName);
 
-    if (profileImageUpdateResponse.result == false) {
-      ToastComponent.showDialog(
-        profileImageUpdateResponse.message,
-      );
-      return;
-    } else {
-      ToastComponent.showDialog(
-        profileImageUpdateResponse.message,
-      );
+    ToastComponent.showDialog(response.message);
 
-      avatar_original.$ = profileImageUpdateResponse.path;
+    if (response.result == true) {
+      avatar_original.$ = response.path;
       setState(() {});
     }
   }
