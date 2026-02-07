@@ -27,7 +27,7 @@ android {
         applicationId = "com.shgrade.android"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
-        versionCode = 3
+        versionCode = 5
         versionName = flutter.versionName
         multiDexEnabled = true
     }
