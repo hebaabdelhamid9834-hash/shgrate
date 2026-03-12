@@ -130,6 +130,8 @@ print("email $cleanedEmail "
           "App-Language": app_language.$!,
         },
         body: postBody);
+    print("postbody${postBody}");
+print("sign up response ${response.body}");
 
     return loginResponseFromJson(response.body);
   }

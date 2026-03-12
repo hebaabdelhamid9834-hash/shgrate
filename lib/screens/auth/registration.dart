@@ -34,7 +34,7 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  String _register_by = "email"; //phone or email
+  String _register_by = "phone"; //phone or email
   String initialCountry = 'US';
 
   var countries_code = <String?>[];
@@ -94,7 +94,7 @@ class _RegistrationState extends State<Registration> {
     } else if (_register_by == 'email' && (email == "" || !isEmail(email))) {
       ToastComponent.showDialog(AppLocalizations.of(context).enter_email);
       return;
-    } else if (_register_by == 'phone' && _phone == "") {
+    } else if (_register_by == 'phone' && (_phone == "" || _phone == null)) {
       ToastComponent.showDialog(
         AppLocalizations.of(context).enter_phone_number,
       );
@@ -194,16 +194,17 @@ print("message${message}");
             },
           ),
         );
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return Home();
-            },
-          ),
-        );
-      }
+       }
+      //else {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) {
+      //         return Home();
+      //       },
+      //     ),
+      //   );
+      // }
     }
   }
 
