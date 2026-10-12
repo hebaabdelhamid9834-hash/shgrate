@@ -78,7 +78,7 @@ class _PasswordForgetState extends State<PasswordForget> {
       ToastComponent.showDialog(passwordForgetResponse.message!);
     } else {
       ToastComponent.showDialog(passwordForgetResponse.message!);
-print("sucess in sending code ${passwordForgetResponse.message}");
+      print("sucess in sending code ${passwordForgetResponse.message}");
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -92,7 +92,7 @@ print("sucess in sending code ${passwordForgetResponse.message}");
 
   fetch_country() async {
     var data = await AddressRepository().getCountryList();
-    data.countries.forEach((c) => countries_code.add(c.code));
+    data.countries!.forEach((c) => countries_code.add(c.code));
   }
 
   @override
@@ -103,8 +103,7 @@ print("sucess in sending code ${passwordForgetResponse.message}");
       context,
       "${AppLocalizations.of(
         context,
-      )!
-          .forget_password_ucf}!",
+      )!.forget_password_ucf}!",
       buildBody(screen_width, context),
     );
   }
@@ -122,8 +121,7 @@ print("sucess in sending code ${passwordForgetResponse.message}");
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Text(
-                  _send_code_by == "email" ? AppLocalizations.of(context).email_ucf :
-                  AppLocalizations.of(context).phone_ucf,
+                  _send_code_by == "email" ? AppLocalizations.of(context).email_ucf : AppLocalizations.of(context).phone_ucf,
                   style: TextStyle(
                     color: MyTheme.accent_color,
                     fontWeight: FontWeight.w600,

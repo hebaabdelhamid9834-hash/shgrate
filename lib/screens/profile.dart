@@ -3636,8 +3636,7 @@ class _ProfileState extends State<Profile> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(6),
       ),
-      child:
-      GridView(
+      child: GridView(
         scrollDirection: Axis.horizontal,
         physics: const PageScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -3908,49 +3907,10 @@ class _ProfileState extends State<Profile> {
     return Container(
       alignment: Alignment.center,
       height: 48,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 14.0),
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: MyTheme.white, width: 1),
-              ),
-              child: is_logged_in.$
-                  ? ClipRRect(
-                      clipBehavior: Clip.hardEdge,
-                      borderRadius: BorderRadius.all(Radius.circular(100.0)),
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/placeholder.png',
-                        image: "${avatar_original.$}",
-                        fit: BoxFit.fill,
-                      ),
-                    )
-                  : Image.asset(
-                      'assets/profile_placeholder.png',
-                      height: 48,
-                      width: 48,
-                      fit: BoxFit.fitHeight,
-                    ),
-            ),
-          ),
-          SizedBox(width: 10,),
-          buildUserInfo(),
-          Spacer(),
-          GestureDetector(
-            child: Icon(
-              is_logged_in.$ ? Icons.logout : Icons.login,
-              color: Colors.white,
-              size: 25,
-            ),
-            onTap: () {
-              if (is_logged_in.$) {
-                showDialog(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: is_logged_in.$
+            ? () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
@@ -3975,23 +3935,93 @@ class _ProfileState extends State<Profile> {
                       ],
                     );
                   },
-                );
-              } else {
-                context.push("/users/login");
-              }
-            },
-          ),
-          is_logged_in.$
-              ? IconButton(
-                  onPressed: () {
-                    Navigator.of(
-                      context,
-                    ).push(MaterialPageRoute(builder: (context) => Settings()));
-                  },
-                  icon: Icon(Icons.settings, color: Colors.white),
                 )
-              : SizedBox(),
-        ],
+            : () => context.push("/users/login"),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 14.0),
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(color: MyTheme.white, width: 1),
+                ),
+                child: is_logged_in.$
+                    ? ClipRRect(
+                        clipBehavior: Clip.hardEdge,
+                        borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                        child: FadeInImage.assetNetwork(
+                          placeholder: 'assets/placeholder.png',
+                          image: "${avatar_original.$}",
+                          fit: BoxFit.fill,
+                        ),
+                      )
+                    : Image.asset(
+                        'assets/profile_placeholder.png',
+                        height: 48,
+                        width: 48,
+                        fit: BoxFit.fitHeight,
+                      ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            buildUserInfo(),
+            Spacer(),
+            GestureDetector(
+              child: Icon(
+                is_logged_in.$ ? Icons.logout : Icons.login,
+                color: Colors.white,
+                size: 25,
+              ),
+              onTap: is_logged_in.$
+                  ? () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            title: Text(LangText(context).local.logout_ucf),
+                            content: Text(LangText(context).local.logout_warning_description),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(LangText(context).local.cancel_ucf),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  AuthHelper().clearUserData();
+                                  context.go("/");
+                                },
+                                child: Text(LangText(context).local.ok),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  : null,
+            ),
+            is_logged_in.$
+                ? IconButton(
+                    onPressed: () {
+                      Navigator.of(
+                        context,
+                      ).push(MaterialPageRoute(builder: (context) => Settings()));
+                    },
+                    icon: Icon(Icons.settings, color: Colors.white),
+                  )
+                : SizedBox(),
+          ],
+        ),
       ),
     );
   }

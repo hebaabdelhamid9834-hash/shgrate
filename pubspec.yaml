@@ -21,6 +21,7 @@ dependencies:
   firebase_core: ^4.1.0
   firebase_messaging: ^16.0.1
   flip_card: ^0.7.0
+  font_awesome_flutter: ^11.0.0
   flutter:
     sdk: flutter
   flutter_chat_bubble: ^2.0.0

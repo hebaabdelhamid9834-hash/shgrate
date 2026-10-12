@@ -1,3 +1,7 @@
+import org.gradle.api.tasks.compile.JavaCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 allprojects {
     repositories {
         google()
@@ -17,6 +21,20 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
+}
+
+gradle.projectsEvaluated {
+    // Keep app and plugin JVM targets aligned when building with the JDK
+    // bundled with current Android Studio versions.
+    subprojects {
+        val kotlinJvmTarget = tasks.withType<JavaCompile>()
+            .firstOrNull()
+            ?.targetCompatibility
+            ?: "17"
+        tasks.withType<KotlinCompile>().configureEach {
+            compilerOptions.jvmTarget.set(JvmTarget.fromTarget(kotlinJvmTarget))
+        }
+    }
 }
 
 tasks.register<Delete>("clean") {

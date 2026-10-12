@@ -66,7 +66,11 @@ class _RegistrationState extends State<Registration> {
 
   Future<void> fetch_country() async {
     var data = await AddressRepository().getCountryList();
-    data.countries.forEach((c) => countries_code.add(c.code));
+    if (!mounted) return;
+
+    setState(() {
+      countries_code = data.countries!.map<String?>((country) => country.code).where((code) => code != null && code.isNotEmpty).toList();
+    });
   }
 
   @override
@@ -81,8 +85,7 @@ class _RegistrationState extends State<Registration> {
 
   Future<void> onPressSignUp() async {
     print("start");
-     Loading.show(context);
-
+    Loading.show(context);
     var name = _nameController.text.toString();
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
@@ -130,17 +133,17 @@ class _RegistrationState extends State<Registration> {
       googleRecaptchaKey,
       countryCode: _register_by == 'phone' ? _country_code : "",
     );
-     Loading.close();
+    Loading.close();
 
     if (signupResponse.result == false) {
       var message = "";
       signupResponse.message.forEach((value) {
         message += value + "\n";
       });
-print("message${message}");
+      print("message${message}");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:  Text(message),
+          content: Text(message),
           duration: const Duration(seconds: 2), // optional
         ),
       );
@@ -194,7 +197,7 @@ print("message${message}");
             },
           ),
         );
-       }
+      }
       //else {
       //   Navigator.push(
       //     context,
@@ -254,7 +257,7 @@ print("message${message}");
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Text(
-                  AppLocalizations.of(context).email_ucf ,
+                  AppLocalizations.of(context).email_ucf,
                   style: TextStyle(
                     color: MyTheme.accent_color,
                     fontWeight: FontWeight.w600,
@@ -289,52 +292,52 @@ print("message${message}");
                   ),
                 ),
               ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        height: 36,
-                        child: CustomInternationalPhoneNumberInput(
-                          countries: countries_code,
-                          onInputChanged: (PhoneNumber number) {
-                            print(number.phoneNumber);
-                            setState(() {
-                              _phone = number.phoneNumber;
-                              _country_code = number.dialCode;
-                            });
-                          },
-                          onInputValidated: (bool value) {
-                            print(value);
-                          },
-                          selectorConfig: SelectorConfig(
-                            selectorType: PhoneInputSelectorType.DIALOG,
-                          ),
-                          ignoreBlank: false,
-                          autoValidateMode: AutovalidateMode.disabled,
-                          selectorTextStyle: TextStyle(
-                            color: MyTheme.font_grey,
-                          ),
-                          // initialValue: PhoneNumber(
-                          //     isoCode: countries_code[0].toString()),
-                          textFieldController: _phoneNumberController,
-                          formatInput: true,
-                          keyboardType: TextInputType.numberWithOptions(
-                            signed: true,
-                            decimal: true,
-                          ),
-                          inputDecoration: InputDecorations.buildInputDecoration_phone(
-                            hint_text: "01XXX XXX XXX",
-                          ),
-                          onSaved: (PhoneNumber number) {
-                            //print('On Saved: $number');
-                          },
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      height: 36,
+                      child: CustomInternationalPhoneNumberInput(
+                        countries: countries_code,
+                        onInputChanged: (PhoneNumber number) {
+                          print(number.phoneNumber);
+                          setState(() {
+                            _phone = number.phoneNumber;
+                            _country_code = number.dialCode;
+                          });
+                        },
+                        onInputValidated: (bool value) {
+                          print(value);
+                        },
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.DIALOG,
                         ),
+                        ignoreBlank: false,
+                        autoValidateMode: AutovalidateMode.disabled,
+                        selectorTextStyle: TextStyle(
+                          color: MyTheme.font_grey,
+                        ),
+                        // initialValue: PhoneNumber(
+                        //     isoCode: countries_code[0].toString()),
+                        textFieldController: _phoneNumberController,
+                        formatInput: true,
+                        keyboardType: TextInputType.numberWithOptions(
+                          signed: true,
+                          decimal: true,
+                        ),
+                        inputDecoration: InputDecorations.buildInputDecoration_phone(
+                          hint_text: "01XXX XXX XXX",
+                        ),
+                        onSaved: (PhoneNumber number) {
+                          //print('On Saved: $number');
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Text(

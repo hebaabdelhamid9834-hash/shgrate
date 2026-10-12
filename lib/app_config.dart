@@ -6,6 +6,7 @@ class AppConfig {
   static String app_name = "Shgarde"; //this shows in the splash screen
   static String app_version = "3.3.4";
   static String search_bar_text = "Search in Shgarde..."; //this will show in app Search bar.
+  static const String WHATSAPP_NUMBER = "96522218000";
   static String purchase_code = "dd9578d3-01a5-4e4a-a5e8-6ea7bc5482f3";
   static String system_key = r"$2y$10$I8CialgZLXGXEYRMIkpaoeYQmyzQ5k8.2R6LPrSGJXf5FZ3KTM6T6";
 

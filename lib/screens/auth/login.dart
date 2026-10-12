@@ -67,9 +67,12 @@ class _LoginState extends State<Login> {
 
   Future<void> fetch_country() async {
     var data = await AddressRepository().getCountryList();
-    data.countries.forEach((c) => countries_code.add(c.code));
+    if (!mounted) return;
+
     setState(() {
-      countries_code = data.countries.map((c) => c.code).toList();
+      countries_code = (data.countries ?? [])
+          .map<String?>((country) => country.code)
+          .toList();
     });
   }
 

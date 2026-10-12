@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:active_ecommerce_cms_demo_app/app_config.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/aiz_route.dart';
+import 'package:active_ecommerce_cms_demo_app/custom/whatsapp_floating_button.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/main_helpers.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/l10n.dart';
 import 'package:active_ecommerce_cms_demo_app/lang_config.dart';
@@ -265,7 +266,12 @@ class _MyAppState extends State<MyApp> {
               final isRtl = lang == 'ar' || lang == 'fa' || lang == 'ur' || lang == 'he';
               final wrapped = Directionality(
                 textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
-                child: child!,
+                child: Stack(
+                  children: [
+                    child!,
+                    const WhatsAppFloatingButton(),
+                  ],
+                ),
               );
               return OneContext().builder(context, wrapped);
             },

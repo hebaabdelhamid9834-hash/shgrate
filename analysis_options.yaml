@@ -11,6 +11,11 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - build/**
+    - android/**
+    - ios/**
+    - macos/**
+    - linux/**
   # errors:
   #   invalid_annotation_target: ignore
   #   non_constant_identifier_names: ignore
