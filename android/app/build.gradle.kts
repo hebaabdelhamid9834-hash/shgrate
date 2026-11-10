@@ -47,7 +47,7 @@ android {
         applicationId = "com.shgrade.android"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
-        versionCode = 7
+        versionCode = 8
         versionName = flutter.versionName
         multiDexEnabled = true
         buildConfigField("String", "TIKTOK_APP_SECRET", buildConfigString(tiktokAppSecret))
