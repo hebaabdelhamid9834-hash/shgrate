@@ -10,6 +10,8 @@ workflows:
         distribution_type: app_store
         bundle_identifier: $(PRODUCT_BUNDLE_IDENTIFIER)  # سيأخذ الاسم الصحيح من المتغيرات
     scripts:
+      - name: Disable Swift Package Manager for Flutter plugins
+        script: flutter config --no-enable-swift-package-manager
       - name: Get Flutter packages
         script: flutter pub get
       - name: Build IPA

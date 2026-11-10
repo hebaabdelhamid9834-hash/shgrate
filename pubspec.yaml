@@ -1,7 +1,7 @@
 name: active_ecommerce_cms_demo_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 3.4.7+8
+version: 3.4.8+9
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -97,6 +97,8 @@ flutter_launcher_icons:
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
 flutter:
+  config:
+    enable-swift-package-manager: false
   uses-material-design: true
   generate: true
   assets:
