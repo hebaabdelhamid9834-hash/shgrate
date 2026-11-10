@@ -1,6 +1,22 @@
 import java.util.Properties
 import java.io.File
 
+val localProperties = Properties().apply {
+    val file = File(rootDir, "local.properties")
+    if (file.exists()) {
+        load(file.inputStream())
+    }
+}
+
+val tiktokAppSecret = providers.gradleProperty("TIKTOK_APP_SECRET")
+    .orElse(providers.environmentVariable("TIKTOK_APP_SECRET"))
+    .orElse(localProperties.getProperty("TIKTOK_APP_SECRET") ?: "")
+    .orElse("")
+    .get()
+
+fun buildConfigString(value: String): String =
+    "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -12,6 +28,10 @@ android {
     namespace = "com.shgrade.android"
     compileSdk = 36
     ndkVersion = "28.0.13004108"
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -30,6 +50,7 @@ android {
         versionCode = 7
         versionName = flutter.versionName
         multiDexEnabled = true
+        buildConfigField("String", "TIKTOK_APP_SECRET", buildConfigString(tiktokAppSecret))
     }
 
     // Load keystore properties
@@ -87,6 +108,12 @@ flutter {
 
 dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
+
+    // TikTok Business SDK (native bridge is exposed through MainActivity).
+    implementation("com.github.tiktok:tiktok-business-android-sdk:1.5.0")
+    implementation("androidx.lifecycle:lifecycle-process:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.3.1")
+    implementation("com.android.installreferrer:installreferrer:2.2")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))

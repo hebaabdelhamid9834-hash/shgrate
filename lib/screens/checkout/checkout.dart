@@ -36,6 +36,7 @@ import 'package:active_ecommerce_cms_demo_app/custom/loading.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/auth_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/repositories/guest_checkout_repository.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/guest_checkout_pages/guest_checkout_address.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 
 import 'package:active_ecommerce_cms_demo_app/screens/payment_method_screen/cybersource_screen.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/payment_method_screen/phonePe/phonePe_screen.dart';
@@ -341,6 +342,11 @@ class _CheckoutState extends State<Checkout> {
       return;
     }
 
+    await AnalyticsTrackerService.instance.logInitiateCheckout(
+      total: _grandTotalValue!,
+    );
+    await AnalyticsTrackerService.instance.logAddPaymentInfo();
+
     if (_selected_payment_method == "bkash") {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return BkashScreen(
@@ -427,7 +433,7 @@ class _CheckoutState extends State<Checkout> {
       })).then((value) {
         onPopped(value);
       });
-    } else if (_selected_payment_method == "iyzico") {
+    } else if (_selected_payment_method == "myfatoorah") {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return MyFatooraScreen(
           amount: _grandTotalValue,

@@ -28,6 +28,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/product/widgets/product_sl
 import 'package:active_ecommerce_cms_demo_app/screens/product/widgets/tappable_icon_widget.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/seller_details.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/video_description_screen.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 import 'package:active_ecommerce_cms_demo_app/ui_elements/mini_product_card.dart';
 import 'package:active_ecommerce_cms_demo_app/ui_elements/top_selling_products_card.dart';
 import 'package:badges/badges.dart' as badges;
@@ -99,6 +100,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
   bool _relatedProductInit = false;
   final List<dynamic> _topProducts = [];
   bool _topProductInit = false;
+  bool _viewContentTracked = false;
 
   @override
   void initState() {
@@ -176,6 +178,15 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
     }
 
     setProductDetailValues();
+
+    if (!_viewContentTracked && _productDetails != null) {
+      _viewContentTracked = true;
+      await AnalyticsTrackerService.instance.logViewContent(
+        contentId: _productDetails!.id?.toString() ?? widget.slug,
+        contentName: _productDetails!.name ?? widget.slug,
+        price: double.tryParse(_productDetails!.calculable_price.toString()) ?? 0,
+      );
+    }
 
     setState(() {});
   }
@@ -411,6 +422,12 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
       ToastComponent.showDialog(cartAddResponse.message);
       return;
     } else {
+      await AnalyticsTrackerService.instance.logAddToCart(
+        contentId: _productDetails!.id?.toString() ?? widget.slug,
+        contentName: _productDetails!.name ?? widget.slug,
+        price: (double.tryParse(_singlePrice.toString()) ?? 0) * (_quantity ?? 1),
+        quantity: _quantity ?? 1,
+      );
       Provider.of<CartCounter>(context!, listen: false).getCount();
 
       if (mode == "add_to_cart") {
@@ -921,7 +938,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
-                             top: 18,
+                            top: 18,
                             left: 33,
                             right: 33,
                           ),
@@ -944,7 +961,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                                   ),
                                 ),
                               ),
-          
+
                               // Show product name in appbar
                               Spacer(),
                               // Cart button at top
@@ -1028,7 +1045,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                     ),
                   ),
                 ),
-          
+
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -1116,16 +1133,16 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                             child: Column(
                               children: [
                                 SizedBox(height: 11),
-          
+
                                 _productDetails != null ? buildChoiceOptionList() : buildVariantShimmers(),
-          
+
                                 _productDetails != null
                                     ? (_colorList.isNotEmpty ? buildColorRow() : Container())
                                     : ShimmerHelper().buildBasicShimmer(
                                         height: 30.0,
                                       ),
                                 SizedBox(height: 20),
-          
+
                                 ///whole sale
                                 Visibility(
                                   visible: whole_sale_addon_installed.$,
@@ -1137,7 +1154,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                                           height: 30.0,
                                         ),
                                 ),
-          
+
                                 _productDetails != null
                                     ? buildQuantityRow()
                                     : ShimmerHelper().buildBasicShimmer(
@@ -1161,7 +1178,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                     ),
                   ),
                 ),
-          
+
                 ////////////////////////for description//////////////////
                 SliverToBoxAdapter(
                   child: Column(
@@ -1282,7 +1299,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                             );
                             return;
                           }
-          
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -1421,7 +1438,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                     buildProductsMayLikeList(),
                   ]),
                 ),
-          
+
                 //Top selling product
                 SliverList(
                   delegate: SliverChildListDelegate([

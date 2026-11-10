@@ -18,6 +18,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/auth/login.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/auth/otp.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/common_webview_screen.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/home.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 import 'package:active_ecommerce_cms_demo_app/ui_elements/auth_ui.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
@@ -35,12 +36,13 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   String _register_by = "phone"; //phone or email
-  String initialCountry = 'US';
+  // Shgarde's default market is Kuwait.
+  String initialCountry = 'KW';
 
   var countries_code = <String?>[];
 
   String? _phone = "";
-  String? _country_code = "+20";
+  String? _country_code = "+965";
 
   bool? _isAgree = false;
   bool _isCaptchaShowing = false;
@@ -85,7 +87,6 @@ class _RegistrationState extends State<Registration> {
 
   Future<void> onPressSignUp() async {
     print("start");
-    Loading.show(context);
     var name = _nameController.text.toString();
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
@@ -124,6 +125,7 @@ class _RegistrationState extends State<Registration> {
       return;
     }
 
+    Loading.show(context);
     var signupResponse = await AuthRepository().getSignupResponse(
       name,
       _register_by == 'email' ? email : _phone,
@@ -152,6 +154,13 @@ class _RegistrationState extends State<Registration> {
       print("message${signupResponse.message}");
       ToastComponent.showDialog(signupResponse.message);
       AuthHelper().setUserData(signupResponse);
+      await AnalyticsTrackerService.instance.identify(
+        userId: signupResponse.user?.id?.toString() ?? '',
+        name: name,
+        phone: _register_by == 'phone' ? _phone : null,
+        email: _register_by == 'email' ? email : null,
+      );
+      await AnalyticsTrackerService.instance.logRegistration(method: _register_by);
 
       // redirect to main
       // Navigator.pushAndRemoveUntil(context,
@@ -319,8 +328,10 @@ class _RegistrationState extends State<Registration> {
                         selectorTextStyle: TextStyle(
                           color: MyTheme.font_grey,
                         ),
-                        // initialValue: PhoneNumber(
-                        //     isoCode: countries_code[0].toString()),
+                        initialValue: PhoneNumber(
+                          isoCode: initialCountry,
+                          dialCode: _country_code,
+                        ),
                         textFieldController: _phoneNumberController,
                         formatInput: true,
                         keyboardType: TextInputType.numberWithOptions(

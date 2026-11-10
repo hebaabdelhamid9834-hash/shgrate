@@ -8,6 +8,7 @@ import 'package:active_ecommerce_cms_demo_app/repositories/payment_repository.da
 import 'package:active_ecommerce_cms_demo_app/screens/orders/order_list.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/profile.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/wallet.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/l10n.dart';
@@ -99,7 +100,7 @@ class _MyFatooraScreenState extends State<MyFatooraScreen> {
   }
 
   void getData() {
-    _webViewController.runJavaScriptReturningResult("document.body.innerText").then((data) {
+    _webViewController.runJavaScriptReturningResult("document.body.innerText").then((data) async {
       var responseJSON = jsonDecode(data as String);
       if (responseJSON.runtimeType == String) {
         responseJSON = jsonDecode(responseJSON);
@@ -109,6 +110,9 @@ class _MyFatooraScreenState extends State<MyFatooraScreen> {
         Navigator.pop(context);
       } else if (responseJSON["result"] == true) {
         ToastComponent.showDialog(responseJSON["message"]);
+        await AnalyticsTrackerService.instance.logPurchase(
+          total: widget.amount ?? 0,
+        );
 
         if (widget.payment_type == "cart_payment") {
           Navigator.pushReplacement(

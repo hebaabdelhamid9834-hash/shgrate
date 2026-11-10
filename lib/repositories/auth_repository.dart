@@ -16,38 +16,55 @@ class AuthRepository {
     if (value == null) return '';
     return value.replaceAll(RegExp(r'[^a-zA-Z0-9@.]'), '');
   }
+
+  String normalizePhone(String? value, {String? countryCode}) {
+    var phone = (value ?? '').trim().replaceAll(RegExp(r'[\s\-\(\)]'), '');
+    if (phone.isEmpty) return phone;
+
+    if (phone.startsWith('00')) {
+      phone = '+${phone.substring(2)}';
+    }
+
+    if (!phone.startsWith('+')) {
+      final code = (countryCode ?? '').trim();
+      if (code.isNotEmpty) {
+        phone = '${code.startsWith('+') ? code : '+$code'}$phone';
+      } else if (phone.length == 8) {
+        phone = '+965$phone';
+      } else {
+        phone = '+$phone';
+      }
+    }
+
+    return '+${phone.substring(1).replaceAll(RegExp(r'[^0-9]'), '')}';
+  }
+
   Future<LoginResponse> getLoginResponse(
     String? email,
     String password,
     String loginBy, {
     String? countryCode,
-  }) async
-  {
-    print("email ${email}");
-    final cleanedEmail = cleanInput(email);
-    print("email ${cleanedEmail}");
+  }) async {
+    final cleanedInput = loginBy == 'phone' ? normalizePhone(email, countryCode: countryCode) : cleanInput(email);
     var postBody = jsonEncode({
-      "phone": cleanedEmail,
-      // "phone": "$countryCode$email",
-      // "country_code": "$countryCode",
+      "phone": cleanedInput,
+      if (loginBy == 'phone') "country_code": countryCode ?? "+965",
       "password": password,
       "identity_matrix": AppConfig.purchase_code,
       "login_by": loginBy,
       "temp_user_id": temp_user_id.$,
     });
-print("email $cleanedEmail "
-    " password ${password}");
     String url = ("${AppConfig.BASE_URL}/auth/login");
     final response = await ApiRequest.post(
-        url: url,
-        headers: {
-          "Accept": "*/*",
-          "Content-Type": "application/json",
-          "App-Language": app_language.$!,
-          "system-key": r"$2y$10$I8CialgZLXGXEYRMIkpaoeYQmyzQ5k8.2R6LPrSGJXf5FZ3KTM6T6"
-        },
-        body: postBody);
-    print('login response ${response.body}');
+      url: url,
+      headers: {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+        "App-Language": app_language.$!,
+        "System-Key": AppConfig.system_key,
+      },
+      body: postBody,
+    );
     return loginResponseFromJson(response.body);
   }
 
@@ -58,8 +75,7 @@ print("email $cleanedEmail "
     String? provider, {
     access_token = "",
     secret_token = "",
-  }) async
-  {
+  }) async {
     email = email == ("null") ? "" : email;
 
     var postBody = jsonEncode({"name": name, "email": email, "provider": "$provider", "social_provider": socialProvider, "access_token": "$access_token", "secret_token": "$secret_token"});
@@ -109,11 +125,11 @@ print("email $cleanedEmail "
     String registerBy,
     String capchaKey, {
     String? countryCode,
-  }) async
-  {
+  }) async {
+    final normalizedPhone = registerBy == 'phone' ? normalizePhone(emailOrPhone, countryCode: countryCode) : cleanInput(emailOrPhone);
     var postBody = jsonEncode({
       "name": name,
-      "phone": "$emailOrPhone",
+      "phone": normalizedPhone,
       "country_code": "$countryCode",
       "password": password,
       "password_confirmation": passowrdConfirmation,
@@ -130,9 +146,6 @@ print("email $cleanedEmail "
           "App-Language": app_language.$!,
         },
         body: postBody);
-    print("postbody${postBody}");
-print("sign up response ${response.body}");
-
     return loginResponseFromJson(response.body);
   }
 
@@ -171,7 +184,6 @@ print("sign up response ${response.body}");
     var postBody = jsonEncode({"phone": "$cleanedEmail", "send_code_by": sendCodeBy});
 
     String url = ("${AppConfig.BASE_URL}/auth/password/forget_request");
-print("email ${cleanedEmail} sendCodeby${sendCodeBy}");
     final response = await ApiRequest.post(
         url: url,
         headers: {

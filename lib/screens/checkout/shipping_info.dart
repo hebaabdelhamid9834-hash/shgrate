@@ -384,10 +384,13 @@ class _ShippingInfoState extends State<ShippingInfo> {
               ),
               Container(
                 width: 200,
-                child: Text(
-                  _deliveryInfoList[sellerArrayIndex].pickupPoints![pickupPointIndex].phone!,
-                  maxLines: 2,
-                  style: TextStyle(fontSize: 13, color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Text(
+                    _deliveryInfoList[sellerArrayIndex].pickupPoints![pickupPointIndex].phone!,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 13, color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
             ],
@@ -647,12 +650,11 @@ class _ShippingInfoState extends State<ShippingInfo> {
     return Btn.basic(
       color: _sellerWiseShippingOption[sellerIndex].shippingOption == ShippingOption.HomeDelivery ? MyTheme.accent_color : MyTheme.accent_color.withOpacity(0.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6), side: BorderSide(color: MyTheme.accent_color)),
-      padding: EdgeInsets.only(right: 14,left: 14),
+      padding: EdgeInsets.only(right: 14, left: 14),
       onPressed: () {
         changeShippingOption(ShippingOption.HomeDelivery, sellerIndex);
       },
-      child:
-      Container(
+      child: Container(
         height: 30,
         // width: (mWidth / 4) - 1,
         alignment: Alignment.center,

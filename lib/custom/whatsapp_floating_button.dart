@@ -1,4 +1,5 @@
 import 'package:active_ecommerce_cms_demo_app/app_config.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +8,7 @@ class WhatsAppFloatingButton extends StatelessWidget {
   const WhatsAppFloatingButton({super.key});
 
   Future<void> _openWhatsApp(BuildContext context) async {
+    await AnalyticsTrackerService.instance.logContact();
     final whatsappUri = Uri.https('wa.me', '/${AppConfig.WHATSAPP_NUMBER}');
 
     try {

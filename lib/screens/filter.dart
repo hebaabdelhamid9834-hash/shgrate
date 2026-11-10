@@ -20,6 +20,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:one_context/one_context.dart';
 
 import 'package:active_ecommerce_cms_demo_app/repositories/search_repository.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 
 class WhichFilter {
   String option_key;
@@ -275,6 +276,7 @@ class _FilterState extends State<Filter> {
   }
 
   _onSearchSubmit() {
+    AnalyticsTrackerService.instance.logSearch(_searchKey ?? '');
     reset();
     if (_selectedFilter!.option_key == "sellers") {
       resetShopList();

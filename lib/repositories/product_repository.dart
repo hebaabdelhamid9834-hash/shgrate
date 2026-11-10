@@ -65,11 +65,39 @@ class ProductRepository {
     return productMiniResponseFromJson(response.body);
   }
 
-  Future<ProductMiniResponse> getFlashDealProducts(id) async {
-    String url = ("${AppConfig.BASE_URL}/flash-deal-products/$id");
-    final response = await ApiRequest.get(url: url, headers: {
-      "App-Language": app_language.$!,
-    });
+  Future<ProductMiniResponse> getFlashDealProducts({
+    required dynamic dealId,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final identifier = dealId?.toString().trim();
+    if (identifier == null || identifier.isEmpty || identifier == 'null') {
+      throw ArgumentError.value(dealId, 'dealId', 'A deal ID or slug is required');
+    }
+
+    final safePage = page < 1 ? 1 : page;
+    final safeLimit = limit.clamp(1, 100);
+    final encodedDealId = Uri.encodeComponent(identifier);
+    final uri = Uri.parse(
+      '${AppConfig.BASE_URL}/flash-deal-products/$encodedDealId',
+    ).replace(
+      queryParameters: {
+        'page': safePage.toString(),
+        'limit': safeLimit.toString(),
+      },
+    );
+
+    final response = await ApiRequest.get(
+      url: uri.toString(),
+      headers: {
+        "App-Language": app_language.$!,
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to load flash deal products');
+    }
+
     return productMiniResponseFromJson(response.body);
   }
 

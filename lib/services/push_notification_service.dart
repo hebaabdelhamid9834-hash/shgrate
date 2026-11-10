@@ -17,35 +17,45 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   importance: Importance.max,
 );
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 class PushNotificationService {
   Future initialise() async {
-    await _fcm.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-    String? fcmToken = 'fhjghjgjkhjhjk';
-    // String? fcmToken = await _fcm.getToken();
+    try {
+      await _fcm.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
+    } catch (error) {
+      debugPrint('Notification permission request failed: $error');
+      return;
+    }
+    String? fcmToken;
+    try {
+      fcmToken = await _fcm.getToken();
+    } catch (error) {
+      debugPrint('Unable to read FCM token: $error');
+    }
 
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
 
     // print("--fcm token--");
     // print(fcmToken);
-    if (is_logged_in.$ == true) {
+    if (is_logged_in.$ == true && fcmToken != null && fcmToken.isNotEmpty) {
       // update device token
-      var deviceTokenUpdateResponse =
-          await ProfileRepository().getDeviceTokenUpdateResponse(fcmToken);
+      await ProfileRepository().getDeviceTokenUpdateResponse(fcmToken);
     }
+
+    _fcm.onTokenRefresh.listen((token) async {
+      if (is_logged_in.$ == true && token.isNotEmpty) {
+        await ProfileRepository().getDeviceTokenUpdateResponse(token);
+      }
+    });
 
     FirebaseMessaging.onMessage.listen((event) {
       //print("onLaunch: " + event.toString());
@@ -54,13 +64,10 @@ class PushNotificationService {
 
       RemoteNotification? notification = event.notification;
       AndroidNotification? android = event.notification?.android;
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin();
-      var initializationSettingsAndroid = AndroidInitializationSettings(
-          '@mipmap/ic_launcher'); // <- default icon name is @mipmap/ic_launcher
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher'); // <- default icon name is @mipmap/ic_launcher
 
-      var initializationSettings =
-          InitializationSettings(android: initializationSettingsAndroid);
+      var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
       flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
@@ -114,9 +121,7 @@ class PushNotificationService {
               Navigator.of(context).pop();
               if (message.data['item_type'] == 'order') {
                 OneContext().push(MaterialPageRoute(builder: (_) {
-                  return OrderDetails(
-                      id: int.parse(message.data['item_type_id']),
-                      from_notification: true);
+                  return OrderDetails(id: int.parse(message.data['item_type_id']), from_notification: true);
                 }));
               }
             },
@@ -153,9 +158,7 @@ class PushNotificationService {
     }
     if (message['data']['item_type'] == 'order') {
       OneContext().push(MaterialPageRoute(builder: (_) {
-        return OrderDetails(
-            id: int.parse(message['data']['item_type_id']),
-            from_notification: true);
+        return OrderDetails(id: int.parse(message['data']['item_type_id']), from_notification: true);
       }));
     } // If there's no view it'll just open the app on the first view    }
   }

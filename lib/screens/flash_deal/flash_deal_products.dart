@@ -24,12 +24,16 @@ class FlashDealProducts extends StatefulWidget {
 }
 
 class FlashDealProductsState extends State<FlashDealProducts> {
-  CountdownTimerController? countdownTimerController;
-  Future<productMini.ProductMiniResponse>? _future;
+  static const int _pageLimit = 20;
 
-  late List<productMini.Product> _searchList;
-  late List<productMini.Product> _fullList;
-  ScrollController? _scrollController;
+  CountdownTimerController? countdownTimerController;
+  final List<productMini.Product> _products = [];
+  final ScrollController _scrollController = ScrollController();
+
+  int _currentPage = 0;
+  int _lastPage = 1;
+  bool _isLoading = false;
+  bool _hasError = false;
 
   FlashDealResponseDatum? flashDealInfo;
 
@@ -78,26 +82,30 @@ class FlashDealProductsState extends State<FlashDealProducts> {
   }
 
   getInfo() async {
-    var res = await FlashDealRepository().getFlashDealInfo(widget.slug);
-    print(res.toJson());
-    if (res.flashDeals?.isNotEmpty ?? false) {
-      flashDealInfo = res.flashDeals?.first;
+    try {
+      var res = await FlashDealRepository().getFlashDealInfo(widget.slug);
+      final info = res.flashDeals?.isNotEmpty == true ? res.flashDeals!.first : null;
 
-      DateTime end = convertTimeStampToDateTime(
-        flashDealInfo!.date!,
-      ); // YYYY-mm-dd
-      DateTime now = DateTime.now();
-      int diff = end.difference(now).inMilliseconds;
-      int endTime = diff + now.millisecondsSinceEpoch;
+      if (info != null) {
+        flashDealInfo = info;
 
-      void onEnd() {}
+        if (info.date != null) {
+          DateTime end = convertTimeStampToDateTime(info.date!);
+          DateTime now = DateTime.now();
+          int diff = end.difference(now).inMilliseconds;
+          int endTime = diff + now.millisecondsSinceEpoch;
 
-      countdownTimerController = CountdownTimerController(
-        endTime: endTime,
-        onEnd: onEnd,
-      );
+          countdownTimerController = CountdownTimerController(
+            endTime: endTime,
+            onEnd: () {},
+          );
+        }
+      }
+    } catch (_) {
+      // The products remain usable even if the optional deal header fails.
     }
-    setState(() {});
+
+    if (mounted) setState(() {});
   }
 
   DateTime convertTimeStampToDateTime(int timeStamp) {
@@ -107,12 +115,61 @@ class FlashDealProductsState extends State<FlashDealProducts> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    getInfo();
-    _future = ProductRepository().getFlashDealProducts(widget.slug);
-    _searchList = [];
-    _fullList = [];
     super.initState();
+    _scrollController.addListener(_onScroll);
+    getInfo();
+    _fetchPage(1);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients || _isLoading) return;
+
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 250 && _currentPage < _lastPage) {
+      _fetchPage(_currentPage + 1);
+    }
+  }
+
+  Future<void> _fetchPage(int page) async {
+    if (_isLoading || page > _lastPage) return;
+
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+
+    try {
+      final response = await ProductRepository().getFlashDealProducts(
+        dealId: widget.slug,
+        page: page,
+        limit: _pageLimit,
+      );
+
+      if (!mounted) return;
+
+      final nextProducts = response.products ?? const <productMini.Product>[];
+      setState(() {
+        if (page == 1) _products.clear();
+        _products.addAll(nextProducts);
+        _currentPage = response.meta?.currentPage ?? page;
+        _lastPage = response.meta?.lastPage ?? (nextProducts.length < _pageLimit ? page : page + 1);
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
+    }
   }
 
   @override
@@ -165,72 +222,106 @@ class FlashDealProductsState extends State<FlashDealProducts> {
     );
   }
 
-  buildProductList(context) {
-    return FutureBuilder(
-      future: _future,
-      builder: (
-        context,
-        AsyncSnapshot<productMini.ProductMiniResponse> snapshot,
-      ) {
-        if (snapshot.hasError) {
-          return Container();
-        } else if (snapshot.hasData) {
-          var productResponse = snapshot.data;
-          if (_fullList.isEmpty) {
-            _fullList.addAll(productResponse!.products!);
-            _searchList.addAll(productResponse.products!);
-          }
+  Widget buildProductList(BuildContext context) {
+    final initialLoading = _isLoading && _products.isEmpty && !_hasError;
 
-          //print('called');
-
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                buildFlashDealsBanner(context),
-                MasonryGridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 14,
-                  crossAxisSpacing: 14,
-                  itemCount: _searchList.length,
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                    top: 16.0,
-                    bottom: 10,
-                    left: 18,
-                    right: 18,
-                  ),
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    // 3
-                    return ProductCardBlack(
-                      id: _searchList[index].id,
-                      slug: _searchList[index].slug!,
-                      image: _searchList[index].thumbnail_image,
-                      name: _searchList[index].name,
-                      main_price: _searchList[index].main_price,
-                      stroked_price: _searchList[index].stroked_price,
-                      has_discount: _searchList[index].has_discount!,
-                      discount: _searchList[index].discount,
-                      is_wholesale: _searchList[index].isWholesale,
-                    );
-                  },
-                ),
-              ],
-            ),
-          );
-        } else {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                headerShimmer(),
-                ShimmerHelper().buildProductGridShimmer(
-                  scontroller: _scrollController,
-                ),
-              ],
-            ),
-          );
-        }
+    return RefreshIndicator(
+      onRefresh: () async {
+        _currentPage = 0;
+        _lastPage = 1;
+        await _fetchPage(1);
       },
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(child: buildFlashDealsBanner(context)),
+          if (initialLoading)
+            SliverToBoxAdapter(
+              child: ShimmerHelper().buildProductGridShimmer(),
+            )
+          else if (_products.isEmpty && _hasError)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _buildErrorState(context),
+            )
+          else if (_products.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text(AppLocalizations.of(context).no_product_is_available),
+              ),
+            )
+          else ...[
+            SliverPadding(
+              padding: const EdgeInsets.only(
+                top: 16,
+                bottom: 10,
+                left: 18,
+                right: 18,
+              ),
+              sliver: SliverMasonryGrid.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childCount: _products.length,
+                itemBuilder: (context, index) => _buildProductCard(index),
+              ),
+            ),
+            if (_isLoading)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 24),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
+            if (_hasError) SliverToBoxAdapter(child: _buildLoadMoreError(context)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductCard(int index) {
+    final product = _products[index];
+    return ProductCardBlack(
+      id: product.id,
+      slug: product.slug ?? '',
+      image: product.thumbnail_image,
+      name: product.name,
+      main_price: product.main_price,
+      stroked_price: product.stroked_price,
+      has_discount: product.has_discount ?? false,
+      discount: product.discount,
+      is_wholesale: product.isWholesale,
+    );
+  }
+
+  Widget _buildErrorState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(AppLocalizations.of(context).no_data_is_available),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () => _fetchPage(1),
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadMoreError(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Center(
+        child: TextButton(
+          onPressed: () => _fetchPage(_currentPage + 1),
+          child: Text(AppLocalizations.of(context).load_more_ucf),
+        ),
+      ),
     );
   }
 

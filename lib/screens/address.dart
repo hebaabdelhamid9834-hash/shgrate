@@ -1507,12 +1507,15 @@ class _AddressState extends State<Address> {
                         ),
                         Container(
                           width: 200,
-                          child: Text(
-                            _shippingAddressList[index].phone,
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: MyTheme.dark_grey,
-                              fontWeight: FontWeight.w600,
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Text(
+                              _shippingAddressList[index].phone,
+                              maxLines: 2,
+                              style: TextStyle(
+                                color: MyTheme.dark_grey,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),

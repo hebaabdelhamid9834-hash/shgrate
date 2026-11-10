@@ -699,9 +699,12 @@ class _ClassifiedAdsDetailsState extends State<ClassifiedAdsDetails> with Ticker
               showPhone = !showPhone;
               setState(() {});
             },
-            child: Text(
-              showPhone ? _productDetails!.phone! : "01XXXXXXXXX",
-              style: TextStyle(fontSize: 12, color: MyTheme.dark_font_grey),
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Text(
+                showPhone ? _productDetails!.phone! : "01XXXXXXXXX",
+                style: TextStyle(fontSize: 12, color: MyTheme.dark_font_grey),
+              ),
             ),
           ),
         ),

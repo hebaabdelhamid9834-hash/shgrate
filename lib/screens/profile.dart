@@ -4042,13 +4042,16 @@ class _ProfileState extends State<Profile> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: Text(
-                  user_email.$ != ""
-                      ? user_email.$
-                      : user_phone.$ != ""
-                          ? user_phone.$
-                          : '',
-                  style: TextStyle(color: MyTheme.light_grey),
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Text(
+                    user_email.$ != ""
+                        ? user_email.$
+                        : user_phone.$ != ""
+                            ? user_phone.$
+                            : '',
+                    style: TextStyle(color: MyTheme.light_grey),
+                  ),
                 ),
               ),
             ],

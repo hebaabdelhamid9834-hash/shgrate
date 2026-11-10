@@ -7,6 +7,7 @@ import 'package:active_ecommerce_cms_demo_app/custom/home_banner_one.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/home_carousel_slider.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/home_search_box.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/pirated_widget.dart';
+import 'package:active_ecommerce_cms_demo_app/custom/shgarde_shorts_section.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/shimmer_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/l10n/l10n.dart';
@@ -94,9 +95,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         // REASON: This section contains multiple dynamic widgets.
                         // Instead of one builder, we wrap each dynamic part below.
                         _buildHeaderSection(context, homeData),
-              
+
                         // REASON: Wrap each dynamic section in its own builder
                         // to ensure only that part rebuilds when its data changes.
+                        const SliverToBoxAdapter(
+                          child: ShgardeShortsSection(),
+                        ),
                         ListenableBuilder(
                           listenable: homeData,
                           builder: (context, child) => _buildFeaturedCategoriesSection(context, homeData),

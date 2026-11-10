@@ -28,11 +28,9 @@ class _SelectAddressState extends State<SelectAddress> {
     mWidth = MediaQuery.of(context).size.width;
     return ChangeNotifierProvider(
       create: (_) => SelectAddressProvider()..init(context),
-      child: Consumer<SelectAddressProvider>(
-          builder: (context, selectAddressProvider, _) {
+      child: Consumer<SelectAddressProvider>(builder: (context, selectAddressProvider, _) {
         return Directionality(
-          textDirection:
-              app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
+          textDirection: app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
           child: Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -41,8 +39,7 @@ class _SelectAddressState extends State<SelectAddress> {
               title: buildAppbarTitle(context),
             ),
             backgroundColor: Colors.white,
-            bottomNavigationBar:
-                buildBottomAppBar(context, selectAddressProvider),
+            bottomNavigationBar: buildBottomAppBar(context, selectAddressProvider),
             body: RefreshIndicator(
               color: MyTheme.accent_color,
               backgroundColor: Colors.white,
@@ -51,15 +48,11 @@ class _SelectAddressState extends State<SelectAddress> {
               child: Container(
                 child: CustomScrollView(
                   controller: selectAddressProvider.mainScrollController,
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   slivers: [
                     SliverList(
                         delegate: SliverChildListDelegate([
-                      Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: buildShippingInfoList(
-                              selectAddressProvider, context)),
+                      Padding(padding: const EdgeInsets.all(16.0), child: buildShippingInfoList(selectAddressProvider, context)),
                       buildAddOrEditAddress(context, selectAddressProvider),
                       SizedBox(
                         height: 100,
@@ -92,13 +85,8 @@ class _SelectAddressState extends State<SelectAddress> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              LangText(context)
-                  .local
-                  .to_add_or_edit_addresses_go_to_address_page,
-              style: TextStyle(
-                  fontSize: 14,
-                  decoration: TextDecoration.underline,
-                  color: MyTheme.accent_color),
+              LangText(context).local.to_add_or_edit_addresses_go_to_address_page,
+              style: TextStyle(fontSize: 14, decoration: TextDecoration.underline, color: MyTheme.accent_color),
             ),
           ),
         ),
@@ -134,11 +122,8 @@ class _SelectAddressState extends State<SelectAddress> {
             LangText(context).local.you_need_to_log_in,
             style: TextStyle(color: MyTheme.font_grey),
           )));
-    } else if (!selectAddressProvider.faceData &&
-        selectAddressProvider.shippingAddressList.length == 0) {
-      return SingleChildScrollView(
-          child: ShimmerHelper()
-              .buildListShimmer(item_count: 5, item_height: 100.0));
+    } else if (!selectAddressProvider.faceData && selectAddressProvider.shippingAddressList.length == 0) {
+      return SingleChildScrollView(child: ShimmerHelper().buildListShimmer(item_count: 5, item_height: 100.0));
     } else if (selectAddressProvider.shippingAddressList.length > 0) {
       return SingleChildScrollView(
         child: ListView.builder(
@@ -149,14 +134,12 @@ class _SelectAddressState extends State<SelectAddress> {
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 4.0),
-              child: buildShippingInfoItemCard(
-                  index, selectAddressProvider, context),
+              child: buildShippingInfoItemCard(index, selectAddressProvider, context),
             );
           },
         ),
       );
-    } else if (selectAddressProvider.faceData &&
-        selectAddressProvider.shippingAddressList.length == 0) {
+    } else if (selectAddressProvider.faceData && selectAddressProvider.shippingAddressList.length == 0) {
       return Container(
           height: 100,
           child: Center(
@@ -167,16 +150,12 @@ class _SelectAddressState extends State<SelectAddress> {
     }
   }
 
-  GestureDetector buildShippingInfoItemCard(
-      index, selectAddressProvider, BuildContext context) {
+  GestureDetector buildShippingInfoItemCard(index, selectAddressProvider, BuildContext context) {
     return GestureDetector(
       onTap: () => selectAddressProvider.shippingInfoCardFnc(index, context),
       child: Card(
         shape: RoundedRectangleBorder(
-          side: selectAddressProvider.selectedShippingAddress ==
-                  selectAddressProvider.shippingAddressList[index].id
-              ? BorderSide(color: MyTheme.accent_color, width: 2.0)
-              : BorderSide(color: MyTheme.light_grey, width: 1.0),
+          side: selectAddressProvider.selectedShippingAddress == selectAddressProvider.shippingAddressList[index].id ? BorderSide(color: MyTheme.accent_color, width: 2.0) : BorderSide(color: MyTheme.light_grey, width: 1.0),
           borderRadius: BorderRadius.circular(8.0),
         ),
         elevation: 0.0,
@@ -215,11 +194,13 @@ class _SelectAddressState extends State<SelectAddress> {
           ),
           Container(
             width: 200,
-            child: Text(
-              selectAddressProvider.shippingAddressList[index].phone,
-              maxLines: 2,
-              style: TextStyle(
-                  color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Text(
+                selectAddressProvider.shippingAddressList[index].phone,
+                maxLines: 2,
+                style: TextStyle(color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ],
@@ -247,8 +228,7 @@ class _SelectAddressState extends State<SelectAddress> {
             child: Text(
               selectAddressProvider.shippingAddressList[index].postal_code,
               maxLines: 2,
-              style: TextStyle(
-                  color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+              style: TextStyle(color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -276,8 +256,7 @@ class _SelectAddressState extends State<SelectAddress> {
             child: Text(
               selectAddressProvider.shippingAddressList[index].country_name,
               maxLines: 2,
-              style: TextStyle(
-                  color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+              style: TextStyle(color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -305,8 +284,7 @@ class _SelectAddressState extends State<SelectAddress> {
             child: Text(
               selectAddressProvider.shippingAddressList[index].state_name,
               maxLines: 2,
-              style: TextStyle(
-                  color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+              style: TextStyle(color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -334,8 +312,7 @@ class _SelectAddressState extends State<SelectAddress> {
             child: Text(
               selectAddressProvider.shippingAddressList[index].city_name,
               maxLines: 2,
-              style: TextStyle(
-                  color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+              style: TextStyle(color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -363,14 +340,11 @@ class _SelectAddressState extends State<SelectAddress> {
             child: Text(
               selectAddressProvider.shippingAddressList[index].address,
               maxLines: 2,
-              style: TextStyle(
-                  color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
+              style: TextStyle(color: MyTheme.dark_grey, fontWeight: FontWeight.w600),
             ),
           ),
           Spacer(),
-          buildShippingOptionsCheckContainer(
-              selectAddressProvider.selectedShippingAddress ==
-                  selectAddressProvider.shippingAddressList[index].id)
+          buildShippingOptionsCheckContainer(selectAddressProvider.selectedShippingAddress == selectAddressProvider.shippingAddressList[index].id)
         ],
       ),
     );
@@ -381,8 +355,7 @@ class _SelectAddressState extends State<SelectAddress> {
         ? Container(
             height: 16,
             width: 16,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0), color: Colors.green),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: Colors.green),
             child: Padding(
               padding: const EdgeInsets.all(3),
               child: Icon(Icons.check, color: Colors.white, size: 10),
@@ -405,8 +378,7 @@ class _SelectAddressState extends State<SelectAddress> {
           ),
           child: Text(
             LangText(context).local.continue_to_delivery_info_ucf,
-            style: TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
           ),
           onPressed: () {
             provider.onPressProceed(context);

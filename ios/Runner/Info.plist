@@ -17,6 +17,14 @@
 	<string>6.0</string>
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>This app needs access to your photo library to set your profile picture.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>يساعدنا السماح بالتتبع على قياس أداء الإعلانات وتحسين تجربة التسوق.</string>
+	<key>TikTokAppId</key>
+	<string>7700508577488240661</string>
+	<key>TikTokApplicationId</key>
+	<string>6758672758</string>
+	<key>TikTokAppSecret</key>
+	<string>$(TIKTOK_APP_SECRET)</string>
 	<key>CFBundleName</key>
 	<string>Shgarde</string>
 	<key>CFBundlePackageType</key>

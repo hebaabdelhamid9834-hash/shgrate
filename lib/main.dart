@@ -44,8 +44,12 @@ import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.da
 import 'package:active_ecommerce_cms_demo_app/screens/product/todays_deal_products.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/profile.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/seller_details.dart';
+import 'package:active_ecommerce_cms_demo_app/screens/shorts_screen.dart';
 import 'package:active_ecommerce_cms_demo_app/services/push_notification_service.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 import 'package:active_ecommerce_cms_demo_app/single_banner/photo_provider.dart';
+import 'package:active_ecommerce_cms_demo_app/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -56,6 +60,10 @@ import 'package:shared_value/shared_value.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // Initialize WebView platform based on the current platform
   // if (Platform.isAndroid) {
@@ -217,6 +225,14 @@ var routes = GoRouter(
           path: "coupons",
           pageBuilder: (BuildContext context, GoRouterState state) => MaterialPage(child: (Coupons())),
         ),
+        GoRoute(
+          path: "offers",
+          pageBuilder: (BuildContext context, GoRouterState state) => const MaterialPage(child: ShortsScreen()),
+        ),
+        GoRoute(
+          path: "shorts",
+          pageBuilder: (BuildContext context, GoRouterState state) => const MaterialPage(child: ShortsScreen()),
+        ),
       ],
     ),
   ],
@@ -234,9 +250,17 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     Future.microtask(() async {
+      final analytics = AnalyticsTrackerService.instance;
+      await analytics.initialize();
+
       if (OtherConfig.USE_PUSH_NOTIFICATION) {
-        PushNotificationService().initialise();
+        await PushNotificationService().initialise();
       }
+
+      // Keep the iOS ATT dialog separate from the notification permission
+      // dialog so that one system prompt does not suppress the other.
+      await Future<void>.delayed(const Duration(seconds: 1));
+      await analytics.requestTrackingAuthorization();
     });
   }
 
@@ -264,12 +288,17 @@ class _MyAppState extends State<MyApp> {
               final locale = provider.locale;
               final lang = locale.languageCode.toLowerCase();
               final isRtl = lang == 'ar' || lang == 'fa' || lang == 'ur' || lang == 'he';
+              // MaterialApp.builder is above the Router inherited scope, so
+              // GoRouter.of(context) is unavailable here. Read the current
+              // location from the app's router instance instead.
+              final currentPath = routes.routerDelegate.currentConfiguration.uri.path;
+              final isAuthRoute = currentPath == '/users/login' || currentPath == '/users/registration';
               final wrapped = Directionality(
                 textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
                 child: Stack(
                   children: [
                     child!,
-                    const WhatsAppFloatingButton(),
+                    if (!isAuthRoute) const WhatsAppFloatingButton(),
                   ],
                 ),
               );

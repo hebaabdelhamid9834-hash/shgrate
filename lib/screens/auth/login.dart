@@ -21,6 +21,7 @@ import 'package:active_ecommerce_cms_demo_app/screens/auth/otp.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/auth/password_forget.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/auth/registration.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/main.dart';
+import 'package:active_ecommerce_cms_demo_app/services/analytics_tracker_service.dart';
 import 'package:active_ecommerce_cms_demo_app/ui_elements/auth_ui.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -41,10 +42,13 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   String _login_by = "email"; //phone or email
-  String initialCountry = 'US';
+  // Shgarde primarily serves Kuwait. Keep the phone selector aligned with
+  // the backend's default country instead of falling back to the package's
+  // first/US country when no value has been entered yet.
+  String initialCountry = 'KW';
 
   String? _phone = "";
-  String? _country_code = "";
+  String? _country_code = "+965";
 
   // PhoneNumber phoneCode = PhoneNumber(isoCode: 'US', dialCode: "+1");
   var countries_code = <String?>[];
@@ -53,6 +57,18 @@ class _LoginState extends State<Login> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _trackLogin(dynamic user, String method) async {
+    final id = user?.id?.toString() ?? '';
+    if (id.isEmpty) return;
+    await AnalyticsTrackerService.instance.identify(
+      userId: id,
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+    );
+    await AnalyticsTrackerService.instance.logLogin(method: method);
+  }
 
   @override
   void initState() {
@@ -70,9 +86,7 @@ class _LoginState extends State<Login> {
     if (!mounted) return;
 
     setState(() {
-      countries_code = (data.countries ?? [])
-          .map<String?>((country) => country.code)
-          .toList();
+      countries_code = (data.countries ?? []).map<String?>((country) => country.code).toList();
     });
   }
 
@@ -89,7 +103,6 @@ class _LoginState extends State<Login> {
   Future<void> onPressedLogin(ctx) async {
     FocusScope.of(context).unfocus();
 
-    Loading.show(context);
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
 
@@ -105,7 +118,9 @@ class _LoginState extends State<Login> {
       ToastComponent.showDialog(AppLocalizations.of(context).enter_password);
       return;
     }
-print("_emailController ${_emailController.text}");
+
+    Loading.show(context);
+    print("_emailController ${_emailController.text}");
 
     print("_login_by ${_login_by}");
 
@@ -133,6 +148,7 @@ print("_emailController ${_emailController.text}");
       ToastComponent.showDialog(loginResponse.message!);
 
       AuthHelper().setUserData(loginResponse);
+      await _trackLogin(loginResponse.user, _login_by);
 
       // push notification starts
       if (OtherConfig.USE_PUSH_NOTIFICATION) {
@@ -210,6 +226,7 @@ print("_emailController ${_emailController.text}");
           ToastComponent.showDialog(loginResponse.message!);
 
           AuthHelper().setUserData(loginResponse);
+          await _trackLogin(loginResponse.user, "facebook");
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -310,6 +327,7 @@ print("_emailController ${_emailController.text}");
         debugPrint("✔ Login success — Saving user data...");
         ToastComponent.showDialog(loginResponse.message!);
         AuthHelper().setUserData(loginResponse);
+        await _trackLogin(loginResponse.user, "google");
 
         debugPrint("➡️ Navigating to Main()");
         Navigator.push(
@@ -464,6 +482,7 @@ print("_emailController ${_emailController.text}");
       } else {
         ToastComponent.showDialog(loginResponse.message!);
         AuthHelper().setUserData(loginResponse);
+        await _trackLogin(loginResponse.user, "apple");
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -634,8 +653,10 @@ print("_emailController ${_emailController.text}");
                           selectorTextStyle: TextStyle(
                             color: MyTheme.font_grey,
                           ),
-                          // initialValue: PhoneNumber(
-                          //     isoCode: countries_code[0].toString()),
+                          initialValue: PhoneNumber(
+                            isoCode: initialCountry,
+                            dialCode: _country_code,
+                          ),
                           textFieldController: _phoneNumberController,
                           formatInput: true,
                           keyboardType: TextInputType.numberWithOptions(
