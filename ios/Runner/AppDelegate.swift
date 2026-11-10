@@ -36,9 +36,9 @@ import TikTokBusinessSDK
 
     let applicationId = (Bundle.main.object(forInfoDictionaryKey: "TikTokApplicationId") as? String)
       ?? "6758672758"
-    let tikTokAppId = NSNumber(value: Int64("7700508577488240661") ?? 0)
-    guard let config = TikTokConfig.config(
-      withAccessToken: accessToken,
+    let tikTokAppId = "7700508577488240661"
+    guard let config = TikTokConfig(
+      accessToken: accessToken,
       appId: applicationId,
       tiktokAppId: tikTokAppId
     ) else {
@@ -88,6 +88,7 @@ import TikTokBusinessSDK
         }
         TikTokBusiness.identify(
           withExternalID: externalId,
+          externalUserName: arguments["externalUserName"] as? String,
           phoneNumber: arguments["phone"] as? String,
           email: arguments["email"] as? String
         )

@@ -79,7 +79,7 @@ class AnalyticsTrackerService {
     try {
       await _channel.invokeMethod<void>('identifyTikTok', {
         'externalId': userId,
-        'name': name,
+        'externalUserName': name,
         'phone': phone,
         'email': email,
       });
