@@ -486,7 +486,7 @@ class _DigitalProductDetailsState extends State<DigitalProductDetails> with Tick
                             ).then((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("Copied to clipboard"),
+                                  content: Text("تم نسخ الرابط"),
                                   behavior: SnackBarBehavior.floating,
                                   duration: Duration(milliseconds: 300),
                                 ),

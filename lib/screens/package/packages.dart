@@ -212,7 +212,7 @@ class _UpdatePackageState extends State<UpdatePackage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Checkout(
-                            title: "Purchase Package",
+                            title: AppLocalizations.of(context).buy_package_ucf,
                             rechargeAmount: double.parse(price.toString()),
                             paymentFor: PaymentFor.PackagePay,
                             packageId: packageId,

@@ -33,8 +33,7 @@ class _ClubpointState extends State<Clubpoint> {
     super.initState();
     fetchData();
     _xcrollController.addListener(() {
-      if (_xcrollController.position.pixels ==
-          _xcrollController.position.maxScrollExtent) {
+      if (_xcrollController.position.pixels == _xcrollController.position.maxScrollExtent) {
         setState(() {
           _page++;
         });
@@ -45,8 +44,7 @@ class _ClubpointState extends State<Clubpoint> {
   }
 
   fetchData() async {
-    var clubpointResponse =
-        await ClubpointRepository().getClubPointListResponse(page: _page);
+    var clubpointResponse = await ClubpointRepository().getClubPointListResponse(page: _page);
     setState(() {
       _list.addAll(clubpointResponse.clubpoints ?? []);
       _isInitial = false;
@@ -74,8 +72,7 @@ class _ClubpointState extends State<Clubpoint> {
   onPressConvert(itemId, SnackBar convertedSnackbar) async {
     if (itemId == null) return;
 
-    var clubpointToWalletResponse =
-        await ClubpointRepository().getClubpointToWalletResponse(itemId);
+    var clubpointToWalletResponse = await ClubpointRepository().getClubpointToWalletResponse(itemId);
     if (clubpointToWalletResponse.result == false) {
       ToastComponent.showDialog(clubpointToWalletResponse.message);
     } else {
@@ -95,15 +92,13 @@ class _ClubpointState extends State<Clubpoint> {
   Widget build(BuildContext context) {
     SnackBar convertedSnackbar = SnackBar(
       content: Text(
-        AppLocalizations.of(context)?.points_converted_to_wallet ??
-            "Points converted to wallet",
+        AppLocalizations.of(context)?.points_converted_to_wallet ?? "تم تحويل النقاط إلى المحفظة",
         style: TextStyle(color: MyTheme.font_grey),
       ),
       backgroundColor: MyTheme.soft_accent_color,
       duration: const Duration(seconds: 3),
       action: SnackBarAction(
-        label: AppLocalizations.of(context)?.show_wallet_all_capital ??
-            "SHOW WALLET",
+        label: AppLocalizations.of(context)?.show_wallet_all_capital ?? "عرض المحفظة",
         onPressed: () {
           Navigator.push(
             context,
@@ -122,8 +117,7 @@ class _ClubpointState extends State<Clubpoint> {
     );
 
     return Directionality(
-      textDirection:
-          app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: MyTheme.mainColor,
         appBar: buildAppBar(context),
@@ -168,11 +162,7 @@ class _ClubpointState extends State<Clubpoint> {
       color: Colors.white,
       child: Center(
         child: Text(
-          _totalData == _list.length
-              ? AppLocalizations.of(context)?.no_more_items_ucf ??
-                  "No more items"
-              : AppLocalizations.of(context)?.loading_more_items_ucf ??
-                  "Loading more items",
+          _totalData == _list.length ? AppLocalizations.of(context)?.no_more_items_ucf ?? "ما فيه عناصر أكثر" : AppLocalizations.of(context)?.loading_more_items_ucf ?? "جاري تحميل المزيد من العناصر",
         ),
       ),
     );
@@ -190,7 +180,7 @@ class _ClubpointState extends State<Clubpoint> {
         ),
       ),
       title: Text(
-        AppLocalizations.of(context)?.earned_points_ucf ?? "Earned Points",
+        AppLocalizations.of(context)?.earned_points_ucf ?? "النقاط المكتسبة",
         style: TextStyle(
           fontSize: 16,
           color: MyTheme.dark_font_grey,
@@ -227,8 +217,7 @@ class _ClubpointState extends State<Clubpoint> {
     } else if (_totalData == 0) {
       return Center(
         child: Text(
-          AppLocalizations.of(context)?.no_data_is_available ??
-              "No data available",
+          AppLocalizations.of(context)?.no_data_is_available ?? "ما فيه بيانات متاحة",
         ),
       );
     } else {
@@ -267,22 +256,17 @@ class _ClubpointState extends State<Clubpoint> {
                   Row(
                     children: [
                       Text(
-                        "${AppLocalizations.of(context)?.converted_ucf ?? "Converted"} - ",
+                        "${AppLocalizations.of(context)?.converted_ucf ?? "تم التحويل"} - ",
                         style: TextStyle(
                           fontSize: 12,
                           color: MyTheme.dark_font_grey,
                         ),
                       ),
                       Text(
-                        (item.convert_status == 1 ||
-                                _converted_ids.contains(item.id))
-                            ? LangText(context).local.yes_ucf
-                            : LangText(context).local.no_ucf,
+                        (item.convert_status == 1 || _converted_ids.contains(item.id)) ? LangText(context).local.yes_ucf : LangText(context).local.no_ucf,
                         style: TextStyle(
                           fontSize: 12,
-                          color: item.convert_status == 1
-                              ? Colors.green
-                              : Colors.blue,
+                          color: item.convert_status == 1 ? Colors.green : Colors.blue,
                         ),
                       ),
                     ],
@@ -290,7 +274,7 @@ class _ClubpointState extends State<Clubpoint> {
                   Row(
                     children: [
                       Text(
-                        "${AppLocalizations.of(context)?.date_ucf ?? "Date"} : ",
+                        "${AppLocalizations.of(context)?.date_ucf ?? "التاريخ"} : ",
                         style: TextStyle(
                           fontSize: 12,
                           color: MyTheme.dark_font_grey,
@@ -324,8 +308,7 @@ class _ClubpointState extends State<Clubpoint> {
                   SizedBox(height: 10),
                   item.convert_status == 1 || _converted_ids.contains(item.id)
                       ? Text(
-                          AppLocalizations.of(context)?.done_all_capital ??
-                              "DONE",
+                          AppLocalizations.of(context)?.done_all_capital ?? "تم",
                           style: TextStyle(
                             color: MyTheme.grey_153,
                             fontSize: 12,
@@ -334,8 +317,7 @@ class _ClubpointState extends State<Clubpoint> {
                         )
                       : (item.convertible_club_point ?? 0) <= 0
                           ? Text(
-                              AppLocalizations.of(context)?.refunded_ucf ??
-                                  "Refunded",
+                              AppLocalizations.of(context)?.refunded_ucf ?? "تم الاسترداد",
                               style: TextStyle(
                                 color: MyTheme.grey_153,
                                 fontSize: 12,
@@ -348,11 +330,8 @@ class _ClubpointState extends State<Clubpoint> {
                               child: Btn.basic(
                                 color: MyTheme.accent_color,
                                 child: Text(
-                                  AppLocalizations.of(context)
-                                          ?.convert_now_ucf ??
-                                      "CONVERT NOW",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10),
+                                  AppLocalizations.of(context)?.convert_now_ucf ?? "تحويل الآن",
+                                  style: TextStyle(color: Colors.white, fontSize: 10),
                                 ),
                                 onPressed: () {
                                   onPressConvert(item.id, convertedSnackbar);

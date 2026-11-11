@@ -118,7 +118,7 @@ class MapLocationState extends State<MapLocation> with SingleTickerProviderState
         //print("-------------");
         /*
         if(!isSearchBarFocused && state != SearchingState.Searching){
-          ToastComponent.showDialog("Hello", context,
+          ToastComponent.showDialog("هلا والله", context,
               gravity: Toast.center, duration: Toast.lengthLong);
         }*/
         return isSearchBarFocused

@@ -127,7 +127,7 @@ class _DigitalProductsState extends State<DigitalProducts> {
       centerTitle: false,
       leading: UsefulElements.backButton(context),
       title: Padding(
-        padding: const EdgeInsets.only(right: 37,left: 37),
+        padding: const EdgeInsets.only(right: 37, left: 37),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -286,7 +286,7 @@ class _DigitalProductCardState extends State<DigitalProductCard> {
                               ],
                             ),
                             child: Text(
-                              "Wholesale",
+                              LangText(context).local.Wholesale,
                               style: TextStyle(
                                 fontSize: 10,
                                 color: Colors.white,

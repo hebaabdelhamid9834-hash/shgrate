@@ -88,7 +88,7 @@ class _OrderDetailsState extends State<OrderDetails> {
 
     _port.listen((dynamic data) {
       if (data[2] >= 100) {
-        ToastComponent.showDialog("File has downloaded successfully.");
+        ToastComponent.showDialog("تم تنزيل الملف بنجاح.");
       }
       setState(() {});
     });
@@ -240,10 +240,10 @@ class _OrderDetailsState extends State<OrderDetails> {
   _showCancelDialog(id) {
     return ConfirmDialog.show(
       context,
-      title: "Please ensure us.",
-      message: "Do you want to cancel this order?",
-      yesText: "Yes",
-      noText: "No",
+      title: "يرجى التأكيد",
+      message: "تبي تلغي هالطلب؟",
+      yesText: LangText(context).local.yes_ucf,
+      noText: LangText(context).local.no_ucf,
       pressYes: () {
         _onPressCancelOrder(id);
       },
@@ -279,7 +279,7 @@ class _OrderDetailsState extends State<OrderDetails> {
       context,
       MaterialPageRoute(
         builder: (context) => Checkout(
-          title: "Order Re Payment",
+          title: "إعادة دفع الطلب",
           rechargeAmount: convertedAmount,
           paymentFor: PaymentFor.OrderRePayment,
           packageId: 0,

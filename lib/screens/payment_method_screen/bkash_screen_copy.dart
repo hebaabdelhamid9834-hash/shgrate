@@ -112,7 +112,7 @@ class _BkashScreenState extends State<BkashScreen> {
             if (page.contains("/bkash/api/callback")) {
               getData();
             } else if (page.contains("/bkash/api/fail")) {
-              ToastComponent.showDialog("Payment cancelled");
+              ToastComponent.showDialog(AppLocalizations.of(context).payment_cancelled_ucf);
               Navigator.of(context).pop();
               return;
             }

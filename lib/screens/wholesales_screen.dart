@@ -224,7 +224,7 @@ class _WholeSalesProductCardState extends State<WholeSalesProductCard> {
                               ],
                             ),
                             child: Text(
-                              "Wholesale",
+                              AppLocalizations.of(context).Wholesale,
                               style: TextStyle(
                                 fontSize: 10,
                                 color: Colors.white,

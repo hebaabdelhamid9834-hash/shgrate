@@ -43,15 +43,14 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   // ------------------- CORRECTED FUNCTION -------------------
   Future<void> chooseAndUploadImage(BuildContext context) async {
-
     // ✅ Android: show disclosure dialog (Google policy)
     if (Platform.isAndroid) {
       bool? userAgreed = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: Text(AppLocalizations.of(context).photo_permission_ucf),
-          content: const Text(
-            "To set your profile picture, this app needs to access your gallery.",
+          content: Text(
+            AppLocalizations.of(context).this_app_needs_permission,
           ),
           actions: <Widget>[
             TextButton(
@@ -60,7 +59,7 @@ class _ProfileEditState extends State<ProfileEdit> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text("Continue"),
+              child: Text(AppLocalizations.of(context).continue_ucf),
             ),
           ],
         ),
@@ -70,8 +69,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     }
 
     // ✅ iOS: NO dialog. Directly open picker (Apple rule)
-    final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile == null) {
       ToastComponent.showDialog(
@@ -84,8 +82,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     String base64Image = FileHelper.getBase64FormateFile(pickedFile.path);
     String fileName = pickedFile.path.split("/").last;
 
-    var response = await ProfileRepository()
-        .getProfileImageUpdateResponse(base64Image, fileName);
+    var response = await ProfileRepository().getProfileImageUpdateResponse(base64Image, fileName);
 
     ToastComponent.showDialog(response.message);
 
@@ -132,7 +129,10 @@ class _ProfileEditState extends State<ProfileEdit> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.verified,color: Colors.green,),
+                Icon(
+                  Icons.verified,
+                  color: Colors.green,
+                ),
                 Text(profileUpdateResponse.message),
               ],
             ),
@@ -193,7 +193,10 @@ class _ProfileEditState extends State<ProfileEdit> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.verified,color: Colors.green,),
+                Icon(
+                  Icons.verified,
+                  color: Colors.green,
+                ),
                 Text(profileUpdateResponse.message),
               ],
             ),
@@ -204,13 +207,16 @@ class _ProfileEditState extends State<ProfileEdit> {
       setState(() {});
     }
   }
+
   void showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) {
         return const Center(
-          child: CircularProgressIndicator(color: Colors.blue,),
+          child: CircularProgressIndicator(
+            color: Colors.blue,
+          ),
         );
       },
     );
@@ -417,7 +423,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
                   AppLocalizations.of(context).password_must_contain_at_least_6_characters,
-                  style:  TextStyle(color:  MyTheme.dark_font_grey, fontStyle: FontStyle.italic),
+                  style: TextStyle(color: MyTheme.dark_font_grey, fontStyle: FontStyle.italic),
                 ),
               )
             ],
@@ -473,7 +479,7 @@ class _ProfileEditState extends State<ProfileEdit> {
               width: 129,
               height: 42,
               decoration: BoxDecoration(color: const Color(0xffE62E04), borderRadius: BorderRadius.circular(8)),
-              child:  Text(
+              child: Text(
                 LangText(context).local.change_password_ucf,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
@@ -589,7 +595,7 @@ class _ProfileEditState extends State<ProfileEdit> {
               width: 129,
               height: 42,
               decoration: BoxDecoration(color: const Color(0xffE62E04), borderRadius: BorderRadius.circular(8)),
-              child:  Text(
+              child: Text(
                 LangText(context).local.update_profile_ucf,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),

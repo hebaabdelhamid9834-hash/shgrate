@@ -250,7 +250,7 @@ class _AuctionProductsDetailsState extends State<AuctionProductsDetails> with Ti
                             ).then((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("Copied to clipboard"),
+                                  content: Text("تم نسخ الرابط"),
                                   behavior: SnackBarBehavior.floating,
                                   duration: Duration(milliseconds: 300),
                                 ),
@@ -1167,7 +1167,7 @@ class _AuctionProductsDetailsState extends State<AuctionProductsDetails> with Ti
                   InkWell(
                     onTap: () {
                       if (is_logged_in == false) {
-                        ToastComponent.showDialog("You need to log in");
+                        ToastComponent.showDialog("لازم تسجّل دخولك أول");
                         return;
                       }
 

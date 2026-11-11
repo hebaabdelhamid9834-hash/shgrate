@@ -84,7 +84,7 @@ class _SslCommerzScreenState extends State<SslCommerzScreen> {
             if (page.contains("/sslcommerz/success")) {
               getData();
             } else if (page.contains("/sslcommerz/cancel") || page.contains("/sslcommerz/fail")) {
-              ToastComponent.showDialog("Payment cancelled or failed");
+              ToastComponent.showDialog("تم إلغاء الدفع أو فشل العملية");
               Navigator.of(context).pop();
               return;
             }

@@ -9,21 +9,17 @@ import 'package:go_router/go_router.dart';
 
 class AIZRoute {
   static final otpRoute = Otp(
-    title: "Verify your account",
+    title: "تحقق من حسابك",
   );
 
-  static Future<T?> push<T extends Object?>(
-      BuildContext context, Widget route) {
+  static Future<T?> push<T extends Object?>(BuildContext context, Widget route) {
     if (_isMailVerifiedRoute(route)) {
-      return Navigator.push(
-          context, MaterialPageRoute(builder: (context) => otpRoute));
+      return Navigator.push(context, MaterialPageRoute(builder: (context) => otpRoute));
     }
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (context) => route));
+    return Navigator.push(context, MaterialPageRoute(builder: (context) => route));
   }
 
-  static Future<T?> slideLeft<T extends Object?>(
-      BuildContext context, Widget route) {
+  static Future<T?> slideLeft<T extends Object?>(BuildContext context, Widget route) {
     if (_isMailVerifiedRoute(route)) {
       return Navigator.push(context, _leftTransition<T>(otpRoute));
     }
@@ -31,8 +27,7 @@ class AIZRoute {
     return Navigator.push(context, _leftTransition<T>(route));
   }
 
-  static Future<T?> slideRight<T extends Object?>(
-      BuildContext context, Widget route) {
+  static Future<T?> slideRight<T extends Object?>(BuildContext context, Widget route) {
     if (_isMailVerifiedRoute(route)) {
       return Navigator.push(context, _rightTransition<T>(otpRoute));
     }
@@ -43,13 +38,11 @@ class AIZRoute {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin =
-            !(app_language_rtl.$!) ? Offset(-1.0, 0.0) : Offset(1.0, 0.0);
+        var begin = !(app_language_rtl.$!) ? Offset(-1.0, 0.0) : Offset(1.0, 0.0);
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -67,8 +60,7 @@ class AIZRoute {
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -82,13 +74,11 @@ class AIZRoute {
     return CustomTransitionPage(
       child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin =
-            !(app_language_rtl.$!) ? Offset(1.0, 0.0) : Offset(-1.0, 0.0);
+        var begin = !(app_language_rtl.$!) ? Offset(1.0, 0.0) : Offset(-1.0, 0.0);
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -100,11 +90,8 @@ class AIZRoute {
 
   static bool _isMailVerifiedRoute(Widget widget) {
     bool mailVerifiedRoute = false;
-    mailVerifiedRoute = <Type>[SelectAddress, Address, Profile]
-        .any((element) => widget.runtimeType == element);
-    if (is_logged_in.$ &&
-        mailVerifiedRoute &&
-        SystemConfig.systemUser != null) {
+    mailVerifiedRoute = <Type>[SelectAddress, Address, Profile].any((element) => widget.runtimeType == element);
+    if (is_logged_in.$ && mailVerifiedRoute && SystemConfig.systemUser != null) {
       return !(SystemConfig.systemUser!.emailVerified ?? true);
     }
     return false;

@@ -247,12 +247,12 @@ class _CouponsState extends State<Coupons> {
       ),
       builder: (context, AsyncSnapshot<ProductMiniResponse> snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text("An error occurred"));
+          return Center(child: Text("صار خطأ"));
         } else if (snapshot.hasData) {
           var products = snapshot.data?.products ?? [];
           if (products.isEmpty) {
             return Text(
-              "No products found",
+              "ما لقينا منتجات",
               style: TextStyle(color: Colors.white),
             );
           }

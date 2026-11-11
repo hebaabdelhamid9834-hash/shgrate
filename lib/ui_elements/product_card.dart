@@ -1,4 +1,5 @@
 import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/l10n.dart';
 import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class ProductCard extends StatefulWidget {
     this.has_discount = false,
     bool? is_wholesale = false, // Corrected to use is_wholesale
     this.discount,
-  })  : isWholesale = is_wholesale;
+  }) : isWholesale = is_wholesale;
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -39,17 +40,14 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        'Wholesale status: ${widget.isWholesale}'); // Debug print to check wholesale status
+    debugPrint('Wholesale status: ${widget.isWholesale}'); // Debug print to check wholesale status
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) {
-              return widget.identifier == 'auction'
-                  ? AuctionProductsDetails(slug: widget.slug)
-                  : ProductDetails(slug: widget.slug);
+              return widget.identifier == 'auction' ? AuctionProductsDetails(slug: widget.slug) : ProductDetails(slug: widget.slug);
             },
           ),
         );
@@ -75,13 +73,11 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                     ),
                     //    if (whole_sale_addon_installed.$ && widget.isWholesale !)
-                    if ((whole_sale_addon_installed.$) &&
-                        (widget.isWholesale ?? false))
+                    if ((whole_sale_addon_installed.$) && (widget.isWholesale ?? false))
                       Positioned(
                         bottom: 0,
                         child: Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.blueGrey,
                             borderRadius: BorderRadius.only(
@@ -97,15 +93,14 @@ class _ProductCardState extends State<ProductCard> {
                             ],
                           ),
                           child: Text(
-                            "Wholesale",
+                            AppLocalizations.of(context).Wholesale,
                             style: TextStyle(
                               fontSize: 10,
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                               height: 1.8,
                             ),
-                            textHeightBehavior: TextHeightBehavior(
-                                applyHeightToFirstAscent: false),
+                            textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
                             softWrap: false,
                           ),
                         ),
@@ -136,12 +131,7 @@ class _ProductCardState extends State<ProductCard> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                           child: Text(
-                            SystemConfig.systemCurrency != null
-                                ? widget.stroked_price?.replaceAll(
-                                        SystemConfig.systemCurrency!.code!,
-                                        SystemConfig.systemCurrency!.symbol!) ??
-                                    ''
-                                : widget.stroked_price ?? '',
+                            SystemConfig.systemCurrency != null ? widget.stroked_price?.replaceAll(SystemConfig.systemCurrency!.code!, SystemConfig.systemCurrency!.symbol!) ?? '' : widget.stroked_price ?? '',
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -158,12 +148,7 @@ class _ProductCardState extends State<ProductCard> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                         child: Text(
-                          SystemConfig.systemCurrency != null
-                              ? widget.main_price?.replaceAll(
-                                      SystemConfig.systemCurrency!.code!,
-                                      SystemConfig.systemCurrency!.symbol!) ??
-                                  ''
-                              : widget.main_price ?? '',
+                          SystemConfig.systemCurrency != null ? widget.main_price?.replaceAll(SystemConfig.systemCurrency!.code!, SystemConfig.systemCurrency!.symbol!) ?? '' : widget.main_price ?? '',
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -211,8 +196,7 @@ class _ProductCardState extends State<ProductCard> {
                               fontWeight: FontWeight.w700,
                               height: 1.8,
                             ),
-                            textHeightBehavior: TextHeightBehavior(
-                                applyHeightToFirstAscent: false),
+                            textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
                             softWrap: false,
                           ),
                         ),

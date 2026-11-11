@@ -2,20 +2,16 @@ import 'package:active_ecommerce_cms_demo_app/custom/AIZTypeDef.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/btn.dart';
 import 'package:active_ecommerce_cms_demo_app/custom/device_info.dart';
 import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmDialog {
-  static show(BuildContext context,
-      {String? title,
-      required String message,
-      String? yesText,
-      String? noText,
-      required OnPress pressYes}) {
+  static show(BuildContext context, {String? title, required String message, String? yesText, String? noText, required OnPress pressYes}) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Please ensure us."),
+          title: Text(title ?? AppLocalizations.of(context).info_ucf),
           content: Row(
             children: [
               SizedBox(
@@ -45,7 +41,7 @@ class ConfirmDialog {
                 pressYes();
               },
               child: Text(
-                "Yes",
+                yesText ?? AppLocalizations.of(context).yes_ucf,
                 style: TextStyle(fontSize: 14, color: MyTheme.white),
               ),
             ),

@@ -1197,7 +1197,7 @@ class _FeaturedProductCardState extends State<FeaturedProductCard> {
                           ],
                         ),
                         child: Text(
-                          "Wholesale",
+                          LangText(context).local.Wholesale,
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.white,

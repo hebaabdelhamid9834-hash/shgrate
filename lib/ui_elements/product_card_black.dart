@@ -1,5 +1,6 @@
 import 'package:active_ecommerce_cms_demo_app/helpers/shared_value_helper.dart';
 import 'package:active_ecommerce_cms_demo_app/helpers/system_config.dart';
+import 'package:active_ecommerce_cms_demo_app/l10n/l10n.dart';
 import 'package:active_ecommerce_cms_demo_app/my_theme.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/auction/auction_products_details.dart';
 import 'package:active_ecommerce_cms_demo_app/screens/product/product_details.dart';
@@ -45,9 +46,7 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return widget.identifier == 'auction'
-                  ? AuctionProductsDetails(slug: widget.slug)
-                  : ProductDetails(slug: widget.slug);
+              return widget.identifier == 'auction' ? AuctionProductsDetails(slug: widget.slug) : ProductDetails(slug: widget.slug);
             },
           ),
         );
@@ -98,12 +97,7 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                           child: Text(
-                            SystemConfig.systemCurrency != null
-                                ? widget.stroked_price?.replaceAll(
-                                        SystemConfig.systemCurrency!.code!,
-                                        SystemConfig.systemCurrency!.symbol!) ??
-                                    ''
-                                : widget.stroked_price ?? '',
+                            SystemConfig.systemCurrency != null ? widget.stroked_price?.replaceAll(SystemConfig.systemCurrency!.code!, SystemConfig.systemCurrency!.symbol!) ?? '' : widget.stroked_price ?? '',
                             textAlign: TextAlign.left,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -120,12 +114,7 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
                         child: Text(
-                          SystemConfig.systemCurrency != null
-                              ? widget.main_price?.replaceAll(
-                                      SystemConfig.systemCurrency!.code!,
-                                      SystemConfig.systemCurrency!.symbol!) ??
-                                  ''
-                              : widget.main_price ?? '',
+                          SystemConfig.systemCurrency != null ? widget.main_price?.replaceAll(SystemConfig.systemCurrency!.code!, SystemConfig.systemCurrency!.symbol!) ?? '' : widget.main_price ?? '',
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -153,8 +142,7 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                         // padding:
                         //     EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         height: 20, width: 48,
-                        margin: EdgeInsets.only(
-                            top: 8, right: 8, bottom: 15), // Adjusted margin
+                        margin: EdgeInsets.only(top: 8, right: 8, bottom: 15), // Adjusted margin
                         decoration: BoxDecoration(
                           color: const Color(0xffe62e04),
                           borderRadius: BorderRadius.circular(10),
@@ -175,16 +163,14 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                               fontWeight: FontWeight.w700,
                               height: 1.8,
                             ),
-                            textHeightBehavior: TextHeightBehavior(
-                                applyHeightToFirstAscent: false),
+                            textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
                             softWrap: false,
                           ),
                         ),
                       ),
                     if (whole_sale_addon_installed.$ && widget.isWholesale!)
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.blueGrey,
                           borderRadius: BorderRadius.only(
@@ -200,15 +186,14 @@ class _ProductCardBlackState extends State<ProductCardBlack> {
                           ],
                         ),
                         child: Text(
-                          "Wholesale",
+                          AppLocalizations.of(context).Wholesale,
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
                             height: 1.8,
                           ),
-                          textHeightBehavior: TextHeightBehavior(
-                              applyHeightToFirstAscent: false),
+                          textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
                           softWrap: false,
                         ),
                       ),

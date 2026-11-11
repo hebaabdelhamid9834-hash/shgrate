@@ -79,7 +79,7 @@ class _ClassifiedProductAddState extends State<ClassifiedProductAdd> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text("Permission Required"),
+        title: Text(AppLocalizations.of(context).permission_required_ucf),
         content: Text(purpose, textAlign: TextAlign.center),
         actions: <Widget>[
           TextButton(
@@ -88,7 +88,7 @@ class _ClassifiedProductAddState extends State<ClassifiedProductAdd> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("Agree"),
+            child: Text(AppLocalizations.of(context).agree_ucf),
           ),
         ],
       ),
@@ -282,7 +282,7 @@ class _ClassifiedProductAddState extends State<ClassifiedProductAdd> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            "Add New Classified Product",
+            AppLocalizations.of(context).add_new_classified_product_ucf,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -639,7 +639,7 @@ class _ClassifiedProductAddState extends State<ClassifiedProductAdd> {
             bool userAgreed = await _showDisclosureDialog(purpose);
 
             if (!userAgreed) {
-              ToastComponent.showDialog("Permission denied to access files.");
+              ToastComponent.showDialog("تم رفض إذن الوصول إلى الملفات.");
               return;
             }
 
@@ -764,7 +764,7 @@ class _ClassifiedProductAddState extends State<ClassifiedProductAdd> {
             bool userAgreed = await _showDisclosureDialog(purpose);
 
             if (!userAgreed) {
-              ToastComponent.showDialog("Permission denied to access photos.");
+              ToastComponent.showDialog("تم رفض إذن الوصول إلى الصور.");
               return;
             }
 
@@ -1403,7 +1403,7 @@ class _ClassifiedProductAddState extends State<ClassifiedProductAdd> {
     bool userAgreed = await _showDisclosureDialog(purpose);
 
     if (!userAgreed) {
-      ToastComponent.showDialog("Permission denied to access photos.");
+      ToastComponent.showDialog("تم رفض إذن الوصول إلى الصور.");
       return;
     }
 

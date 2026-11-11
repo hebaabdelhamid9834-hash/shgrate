@@ -512,7 +512,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
                             ).then((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("Copied to clipboard"),
+                                  content: Text("تم نسخ الرابط"),
                                   behavior: SnackBarBehavior.floating,
                                   duration: Duration(milliseconds: 300),
                                 ),
@@ -2175,9 +2175,7 @@ class _ProductDetailsState extends State<ProductDetails> with TickerProviderStat
           ),
           child: Center(
             child: Text(
-              "Out of Stock",
-              // Using a hardcoded string, but AppLocalizations is better.
-              // AppLocalizations.of(context).out_of_stock_ucf,
+              "نفدت الكمية",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

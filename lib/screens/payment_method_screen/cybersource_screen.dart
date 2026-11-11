@@ -407,8 +407,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
   String? _currentUrl;
 
   late WebViewController _webViewController;
-  final Completer<WebViewController> _controllerCompleter =
-      Completer<WebViewController>();
+  final Completer<WebViewController> _controllerCompleter = Completer<WebViewController>();
 
   @override
   void initState() {
@@ -446,12 +445,9 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
               _currentUrl = url;
             });
 
-            if (url.contains('${AppConfig.BASE_URL}/payment/success') ||
-                url.contains(
-                    '${AppConfig.BASE_URL}/cyber-source/payment/callback')) {
+            if (url.contains('${AppConfig.BASE_URL}/payment/success') || url.contains('${AppConfig.BASE_URL}/cyber-source/payment/callback')) {
               _handlePaymentSuccess();
-            } else if (url.contains('/payment/failure') ||
-                url.contains('/payment/error')) {
+            } else if (url.contains('/payment/failure') || url.contains('/payment/error')) {
               _handlePaymentFailure();
             }
           },
@@ -474,8 +470,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
           },
         ),
       )
-      ..addJavaScriptChannel('PaymentHandler',
-          onMessageReceived: (JavaScriptMessage message) {
+      ..addJavaScriptChannel('PaymentHandler', onMessageReceived: (JavaScriptMessage message) {
         if (message.message == 'payment_success') {
           _handlePaymentSuccess();
         } else if (message.message == 'payment_failure') {
@@ -488,8 +483,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
 
   void createOrder() async {
     try {
-      final orderCreateResponse = await PaymentRepository()
-          .getOrderCreateResponse(widget.payment_method_key);
+      final orderCreateResponse = await PaymentRepository().getOrderCreateResponse(widget.payment_method_key);
 
       if (orderCreateResponse.result == false) {
         _showErrorAndClose(orderCreateResponse.message);
@@ -519,8 +513,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
       if (response.statusCode == 200) {
         await _webViewController.loadHtmlString(response.body);
       } else {
-        _showErrorAndClose(
-            'Failed to initiate payment: ${response.statusCode}');
+        _showErrorAndClose('Failed to initiate payment: ${response.statusCode}');
       }
     } catch (e) {
       _showErrorAndClose('Payment initialization error: $e');
@@ -555,13 +548,13 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
       _isLoading = false;
     });
 
-    ToastComponent.showDialog("Payment completed successfully!");
+    ToastComponent.showDialog("تم الدفع بنجاح!");
     _navigateAfterPayment();
   }
 
   void _handlePaymentFailure() {
     setState(() {
-      _errorMessage = "Payment failed. Please try again.";
+      _errorMessage = "فشل الدفع. حاول مرة ثانية.";
       _isLoading = false;
     });
   }
@@ -569,8 +562,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
   void _navigateAfterPayment() {
     Widget targetScreen;
 
-    if (widget.payment_type == "cart_payment" ||
-        widget.payment_type == "order_re_payment") {
+    if (widget.payment_type == "cart_payment" || widget.payment_type == "order_re_payment") {
       targetScreen = OrderList(from_checkout: true);
     } else if (widget.payment_type == "wallet_payment") {
       targetScreen = Wallet(from_recharge: true);
@@ -597,8 +589,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection:
-          app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: buildAppBar(context),
@@ -623,7 +614,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
             SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Go Back'),
+              child: Text('رجوع'),
             ),
           ],
         ),
@@ -654,9 +645,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
                 CircularProgressIndicator(),
                 SizedBox(height: 16),
                 Text(
-                  _paymentCompleted
-                      ? "Processing payment..."
-                      : "Loading payment gateway...",
+                  _paymentCompleted ? "جاري معالجة الدفع..." : "جاري تحميل بوابة الدفع...",
                 ),
               ],
             ),
@@ -676,19 +665,19 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text("Cancel Payment?"),
-                content: Text("Are you sure you want to cancel this payment?"),
+                title: Text("إلغاء الدفع؟"),
+                content: Text("متأكد إنك تبي تلغي عملية الدفع؟"),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text("No"),
+                    child: Text("لا"),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
-                    child: Text("Yes"),
+                    child: Text("نعم"),
                   ),
                 ],
               ),
@@ -699,7 +688,7 @@ class _CybersourceScreenState extends State<CybersourceScreen> {
         },
       ),
       title: Text(
-        "Pay with CyberSource",
+        "الدفع عن طريق CyberSource",
         style: TextStyle(fontSize: 16, color: MyTheme.accent_color),
       ),
       elevation: 0.0,

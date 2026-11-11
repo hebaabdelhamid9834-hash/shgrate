@@ -32,8 +32,7 @@ class _CouponProductsState extends State<CouponProducts> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection:
-          (app_language_rtl.$ ?? false) ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: (app_language_rtl.$ ?? false) ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: MyTheme.mainColor,
         appBar: buildAppBar(context, widget.code),
@@ -57,11 +56,8 @@ class _CouponProductsState extends State<CouponProducts> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              code ?? 'No Code',
-              style: TextStyle(
-                  fontSize: 16,
-                  color: MyTheme.dark_font_grey,
-                  fontWeight: FontWeight.bold),
+              code ?? 'بدون كود',
+              style: TextStyle(fontSize: 16, color: MyTheme.dark_font_grey, fontWeight: FontWeight.bold),
             ),
             IconButton(
               padding: EdgeInsets.zero,
@@ -94,12 +90,11 @@ class _CouponProductsState extends State<CouponProducts> {
         future: CouponRepository().getCouponProductList(id: widget.id),
         builder: (context, AsyncSnapshot<ProductMiniResponse> snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text("An error occurred"));
+            return Center(child: Text("صار خطأ"));
           } else if (snapshot.hasData) {
             var productResponse = snapshot.data;
-            if (productResponse?.products == null ||
-                productResponse!.products!.isEmpty) {
-              return Center(child: Text("No products found"));
+            if (productResponse?.products == null || productResponse!.products!.isEmpty) {
+              return Center(child: Text("ما لقينا منتجات"));
             }
             return SingleChildScrollView(
               child: MasonryGridView.count(
@@ -108,8 +103,7 @@ class _CouponProductsState extends State<CouponProducts> {
                 crossAxisSpacing: 14,
                 itemCount: productResponse.products!.length,
                 shrinkWrap: true,
-                padding:
-                    EdgeInsets.only(top: 20.0, bottom: 10, left: 18, right: 18),
+                padding: EdgeInsets.only(top: 20.0, bottom: 10, left: 18, right: 18),
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   var product = productResponse.products![index];
@@ -117,7 +111,7 @@ class _CouponProductsState extends State<CouponProducts> {
                     id: product.id,
                     slug: product.slug ?? 'no-slug',
                     image: product.thumbnail_image,
-                    name: product.name ?? 'Unnamed Product',
+                    name: product.name ?? 'منتج بدون اسم',
                     main_price: product.main_price ?? '0',
                     stroked_price: product.stroked_price,
                     has_discount: product.has_discount ?? false,
@@ -128,8 +122,7 @@ class _CouponProductsState extends State<CouponProducts> {
               ),
             );
           } else {
-            return ShimmerHelper()
-                .buildProductGridShimmer(scontroller: _scrollController);
+            return ShimmerHelper().buildProductGridShimmer(scontroller: _scrollController);
           }
         });
   }

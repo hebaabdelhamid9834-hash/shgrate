@@ -108,7 +108,7 @@ class _PaypalScreenState extends State<PaypalScreen> {
             if (page.contains("/paypal/payment/done")) {
               getData();
             } else if (page.contains("/paypal/payment/cancel")) {
-              ToastComponent.showDialog("Payment cancelled");
+              ToastComponent.showDialog(AppLocalizations.of(context).payment_cancelled_ucf);
               Navigator.of(context).pop();
               return;
             }

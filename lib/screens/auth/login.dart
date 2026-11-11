@@ -254,7 +254,7 @@ class _LoginState extends State<Login> {
 
     if (!GoogleSignIn.instance.supportsAuthenticate()) {
       debugPrint("❌ GoogleSignIn not supported on this device");
-      ToastComponent.showDialog("Google login is not supported on this device");
+      ToastComponent.showDialog("تسجيل الدخول باستخدام Google غير مدعوم على هذا الجهاز");
       return;
     }
 
@@ -296,7 +296,7 @@ class _LoginState extends State<Login> {
 
       if (googleUser == null) {
         debugPrint("❌ googleUser == null (User cancelled or timeout)");
-        ToastComponent.showDialog("Google sign-in cancelled or timed out");
+        ToastComponent.showDialog("تم إلغاء تسجيل الدخول باستخدام Google أو انتهت المهلة");
         return;
       }
 
@@ -341,7 +341,7 @@ class _LoginState extends State<Login> {
     } on Exception catch (e, st) {
       debugPrint("❌ Google login error: $e");
       debugPrint("📄 StackTrace:\n$st");
-      ToastComponent.showDialog("Google login failed: $e");
+      ToastComponent.showDialog("فشل تسجيل الدخول باستخدام Google: $e");
     } finally {
       debugPrint("🧹 Cleaning subscription...");
       await sub?.cancel();
