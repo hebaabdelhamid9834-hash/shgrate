@@ -1254,7 +1254,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "shipping_cost_all_capital": MessageLookupByLibrary.simpleMessage(
       "تكلفة الشحن",
     ),
-    "shipping_cost_ucf": MessageLookupByLibrary.simpleMessage("رسوم الشحن"),
+    "shipping_cost_ucf": MessageLookupByLibrary.simpleMessage("رسوم التوصيل"),
     "shipping_days_ucf": MessageLookupByLibrary.simpleMessage("أيام الشحن"),
     "shipping_info": MessageLookupByLibrary.simpleMessage("معلومات الشحن"),
     "shipping_method_ucf": MessageLookupByLibrary.simpleMessage("طريقة الشحن"),
